@@ -8,13 +8,13 @@ Goal: migrate custom CSS from Blocksy “Extra CSS” into external, versioned C
 - Create focused feature branches: `feature/<topic>` (e.g., `feature/extract-blocksy-css`).
 - Keep PRs small and scoped: one topic per PR.
 
-## Versioning & build numbers
-- Every delivered CSS file MUST include a build header comment at the top.
-- Build format:
-  - `Build: <channel>-<YYYYMMDD>.<increment>`
-  - Example: `Build: dev-20260115.001`
-- Also include a human version:
-  - `Version: 0.1.0` (SemVer-ish; bump minor when adding sets of selectors, patch for fixes)
+
+## Versioning, build numbers & releaseflow
+- **Build-nummer**: Elke commit in een feature branch verhoogt het build-nummer (`Build: <branch>-<YYYYMMDD>.<increment>`).
+- **Versie-nummer**: Alleen verhogen bij merge naar `dev`, `staging` of `main` (prod). In feature branches géén Version, alleen Build.
+- **Releaseflow**: Altijd werken via Feature → Dev → Staging → Prod. Elke stap wordt getest en gevalideerd.
+- **Basisversie**: Leg in elke feature branch vast op welke basisversie/commit deze is gebouwd (in docs/ of branch-notes).
+- Elke branch en PR moet deze afspraken volgen.
 
 ## CSS migration rules
 - Do NOT change visuals intentionally while migrating. Prefer 1:1 extraction.
