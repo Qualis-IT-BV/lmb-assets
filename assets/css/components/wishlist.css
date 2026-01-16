@@ -1,0 +1,211 @@
+/* Project: La Maison Bossché
+ * Version: 0.1.0
+ * Build: dev-20260116.001
+ * Source: Blocksy Extra CSS (wishlist extraction)
+ */
+
+.wishlist-count {
+  position: absolute;
+  top: -4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 50%;
+  background: #3F3A36;
+  color: #fff;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.header-wishlist {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 40px;
+}
+
+.wishlist-heart {
+  font-size: 40px;
+  line-height: 1;
+}
+
+/* TI wishlist hartje groter maken (icoon komt via pseudo-element) */
+a.wishlist_products_counter.top_wishlist-heart::before,
+a.wishlist_products_counter.top_wishlist-heart::after {
+  font-size: 32px !important;
+}
+
+/* === TI Wishlist: teller als bolletje === */
+a.wishlist_products_counter {
+  position: relative;
+}
+
+/* Het cijfer zelf omzetten naar badge */
+a.wishlist_products_counter .wishlist_products_counter_number {
+  position: absolute;
+  top: -16px;
+  right: 0px;
+
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--theme-palette-color-2, #3F3A36);
+  color: var(--theme-palette-color-5, #ffffff);
+
+  border-radius: 50%;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  font-weight: 500;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Verberg wishlist badge als het 0 (of leeg) is */
+a.wishlist_products_counter .wishlist_products_counter_number:empty,
+a.wishlist_products_counter .wishlist_products_counter_number[style*="display:none"],
+a.wishlist_products_counter .wishlist_products_counter_number[style*="display: none"]{
+  display: none !important;
+}
+
+/* === La Maison Bossché – Wishlist Image Overlay Styles ===
+ * Build: 024
+ * Datum: 2026-01-10
+ * Wijziging:
+ * - Actieve (solid) kleur = var(--theme-palette-color-2)
+ * - Lichte/icoon kleur = var(--theme-palette-color-1)
+ */
+
+.woocommerce ul.products li.product .lmb-wishlist-image {
+  position: relative !important;
+  display: block !important;
+}
+
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button {
+  position: absolute !important;
+  right: 12px !important;
+  bottom: 12px !important;
+  z-index: 999 !important;
+
+  width: 36px !important;
+  height: 36px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 999px !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+
+  padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+/* Tekst verbergen */
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button span {
+  display: none !important;
+}
+
+/* === TI icoon (basis) === */
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button::before,
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button::after {
+  content: var(--lmb-ti-heart-content) !important;
+  font-family: var(--lmb-ti-heart-font) !important;
+
+  font-size: 22px !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+
+  color: var(--theme-palette-color-2) !important;
+}
+
+/* Toon juiste pseudo afhankelijk van TI position */
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button.tinvwl-position-before::after {
+  content: '' !important;
+}
+
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button.tinvwl-position-after::before {
+  content: '' !important;
+}
+
+/* NIET in wishlist */
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button:not(.lmb-in-wishlist) {
+  background: rgba(255, 255, 255, 0.75) !important;
+  opacity: 0.55 !important;
+}
+
+/* WEL in wishlist (solid) */
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button.lmb-in-wishlist {
+  background: var(--theme-palette-color-2) !important;
+  border-color: var(--theme-palette-color-2) !important;
+  opacity: 1 !important;
+}
+
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button.lmb-in-wishlist::before,
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button.lmb-in-wishlist::after {
+  color: var(--theme-palette-color-1) !important;
+}
+
+/* Hover */
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button:hover {
+  opacity: 1 !important;
+  background: var(--theme-palette-color-2) !important;
+  border-color: var(--theme-palette-color-2) !important;
+}
+
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button:hover::before,
+.woocommerce ul.products li.product
+.lmb-wishlist-image a.tinvwl_add_to_wishlist_button:hover::after {
+  color: var(--theme-palette-color-1) !important;
+}
+
+/* Mobiel */
+@media (max-width: 768px) {
+  .woocommerce ul.products li.product
+  .lmb-wishlist-image a.tinvwl_add_to_wishlist_button {
+    right: 8px !important;
+    bottom: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .woocommerce ul.products li.product
+  .lmb-wishlist-image a.tinvwl_add_to_wishlist_button::before,
+  .woocommerce ul.products li.product
+  .lmb-wishlist-image a.tinvwl_add_to_wishlist_button::after {
+    font-size: 20px !important;
+  }
+}
+
+/* === La Maison Bossché – Wishlist Popup Visibility ===
+ * Build: 001
+ * Datum: 2026-01-11
+ * Wijziging:
+ * - Verbergt TI Wishlist modal/popup (voorkomt flits).
+ */
+
+.tinvwl_added_to_wishlist.tinv-modal,
+.tinv-overlay {
+  display: none !important;
+}
