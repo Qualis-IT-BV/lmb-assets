@@ -1,8 +1,9 @@
 /* Project: La Maison Bossché
- * Version: 0.1.0
- * Build: dev-20260116.001
+ * Version: 0.1.1
+ * Build: dev-20260116.002
  * Source: Custom CSS & JS (wishlist sync)
  * Purpose: Sync wishlist state + move buttons to image overlay + read icon from CSS
+ * Note: Regex uitgebreid voor data-tinv-wl-product en data-product_id
  */
 
 (function () {
@@ -25,16 +26,27 @@
   function parseWishlistIdsFromHtml(html) {
     var ids = {};
 
-    // Breed zoeken: TI attributen + veel voorkomende varianten
+    // Zoek naar zowel data-tinv-wl-product als data-product_id
+    var tiMatches = html.match(/data-tinv-wl-product="(\d+)"/g) || [];
+    var wcMatches = html.match(/data-product_id="(\d+)"/g) || [];
+
+    // Voeg alle gevonden product-IDs toe
+    tiMatches.forEach(function(m) {
+      var found = m.match(/\d+/);
+      if (found) uniqAdd(ids, found[0]);
+    });
+    wcMatches.forEach(function(m) {
+      var found = m.match(/\d+/);
+      if (found) uniqAdd(ids, found[0]);
+    });
+
+    // Fallback: oude patterns (voor legacy/extra zekerheid)
     var patterns = [
-      /data-tinv-wl-product="(\d+)"/g,
-      /data-product_id="(\d+)"/g,
       /data-product-id="(\d+)"/g,
       /data-product="(\d+)"/g,
       /product_id=(\d+)/g,
       /"product_id":\s*(\d+)/g
     ];
-
     var p, re, match;
     for (p = 0; p < patterns.length; p++) {
       re = patterns[p];
