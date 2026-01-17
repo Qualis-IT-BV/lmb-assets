@@ -1,7 +1,7 @@
 /* Project: La Maison Bossché
  * Version: 0.0.1
  * Build: dev-20260116.001
- * Source: Blocksy Extra CSS (non-wishlist styling)
+ * Source: Blocksy Extra CSS (alfa release)
  */
 
 
@@ -278,6 +278,4 @@ a.wishlist_products_counter .wishlist_products_counter_number:has(#nothing) { }
 }
 
 /* === Einde La Maison Bossché – Wishlist Popup Visibility === */
-
-
 
