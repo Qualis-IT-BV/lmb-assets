@@ -1,20 +1,22 @@
+
 /*
- * Elementor GitHub global CSS & JS loader
+ * GitHub global CSS & JS loader
+ * Version: 0.0.1
+ * Build: feature-20260117.001
  *
- * Laadt automatisch de juiste global.css en global.js vanaf GitHub (jsDelivr CDN), afhankelijk van de omgeving (dev, staging, main).
- * Dit script vervangt het handmatig toevoegen van losse CSS- en JS-bestanden in Elementor.
+ * Laadt automatisch de juiste global.css en global.js vanaf GitHub (jsDelivr CDN), afhankelijk van de omgeving (dev, test, staging, main).
+ * Dit script vervangt het handmatig aanpassen en toevoegen van losse CSS- en JS-bestanden.
  *
  * Werkt voor:
- *   - test.lamaisonbossche.nl (dev)
+ *   - dev.lamaisonbossche.nl (dev)
+ *   - test.lamaisonbossche.nl (test)
  *   - staging.lamaisonbossche.nl (staging)
  *   - lamaisonbossche.nl (main)
- *   - en subdomeinen met dev./staging. prefix
  *
- * Plaats deze code altijd tussen <script>...</script> tags in een HTML-widget of "Aangepaste Code" in Elementor, bij voorkeur in de footer (<body> einde).
+ * Plaats deze code "Custom CSS & JS Plugin" in de footer (<body> einde).
  * Je hoeft bij promotie naar een andere omgeving niets aan te passen.
  */
 
-<script>
 (function () {
 	var host = window.location.hostname;
 	var branch;
@@ -40,4 +42,3 @@
 	s.crossOrigin = 'anonymous';
 	document.body.appendChild(s);
 })();
-</script>

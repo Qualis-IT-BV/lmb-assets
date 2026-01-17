@@ -2,9 +2,11 @@
 
 ## Doel van deze branch
 Deze branch is aangemaakt vanuit `dev` om een migratie uit te voeren van:
-- Alle CSS uit Blocksy Extra CSS
-- Alle JavaScript uit de Custom CSS & JS plugin
-naar versiebeheer in GitHub, volgens de nieuwe repo-structuur en conventies.
+- Centraliseren en beheersbaar maken van code.
+- Alle CSS uit Blocksy Extra CSS.
+- Custom CSS & JS plugin laadt de global.css en van daaruit worden alle losse CSS geladen.
+- Custom CSS & JS plugin laadt de global.js en van daaruit worden alle losse JS geladen.
+- Naar versiebeheer in GitHub, volgens de nieuwe repo-structuur en conventies.
 
 ## Werkwijze
 - Migratie gebeurt in deze feature branch.

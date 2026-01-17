@@ -1,7 +1,7 @@
 /* Project: La Maison Bossché
  * Component: Wishlist
  * Build: dev-20260116.003
- * Source: Custom CSS & JS plugin migratie (alfa release)
+ * Source: Custom CSS & JS plugin migratie (alfa release v.0.0.1)
  */
 
 // =============================
