@@ -1,0 +1,7 @@
+# macOS
+**/.DS_Store
+
+# Chrome DevTools (Workspace / Overrides)
+overrides/
+cdn.jsdelivr.net/
+.devtools*
