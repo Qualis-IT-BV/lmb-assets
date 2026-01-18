@@ -9,6 +9,84 @@
 // =============================
 (function () {
   console.log(new Date().toISOString(), '[LMB Wishlist] Init: Click Behavior');
+  
+  // Monitor AJAX calls
+  var originalFetch = window.fetch;
+  window.fetch = function() {
+    console.log(new Date().toISOString(), '[LMB Wishlist] AJAX fetch:', arguments[0]);
+    return originalFetch.apply(this, arguments);
+  };
+  
+  // Monitor new DOM elements
+  if (window.MutationObserver) {
+    var bodyObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1 && node.className && typeof node.className === 'string') {
+            if (node.className.indexOf('tinv') !== -1 || node.className.indexOf('wishlist') !== -1) {
+              console.log(new Date().toISOString(), '[LMB Wishlist] New element added with classes:', node.className);
+              
+              // If popup is added, make it visible immediately!
+              if (node.className.indexOf('tinvwl_added_to_wishlist') !== -1 && node.className.indexOf('tinv-modal') !== -1) {
+                console.log(new Date().toISOString(), '[LMB Wishlist] POPUP DETECTED - forcing visibility NOW');
+                
+                // Force popup to be visible (from Popup Timing section)
+                if (node.className.indexOf('tinv-modal-open') === -1) {
+                  node.className += ' tinv-modal-open';
+                }
+                var overlay = node.querySelector('.tinv-overlay');
+                if (overlay) {
+                  overlay.style.setProperty('display', 'block', 'important');
+                  overlay.style.setProperty('opacity', '1', 'important');
+                  overlay.style.setProperty('visibility', 'visible', 'important');
+                }
+                node.style.setProperty('display', 'block', 'important');
+                node.style.setProperty('opacity', '1', 'important');
+                node.style.setProperty('visibility', 'visible', 'important');
+                node.style.setProperty('pointer-events', 'auto', 'important');
+                node.style.setProperty('z-index', '999999', 'important');
+                
+                console.log(new Date().toISOString(), '[LMB Wishlist] Popup styles applied');
+                
+                // Restore hrefs after popup appears (redirect now allowed)
+                setTimeout(function() {
+                  var buttons = document.querySelectorAll('a.tinvwl_add_to_wishlist_button[data-original-href]');
+                  for (var i = 0; i < buttons.length; i++) {
+                    var btn = buttons[i];
+                    btn.setAttribute('href', btn.getAttribute('data-original-href'));
+                    btn.removeAttribute('data-original-href');
+                  }
+                  console.log(new Date().toISOString(), '[LMB Wishlist] Restored all hrefs after popup');
+                }, 5000);
+              }
+            }
+          }
+        });
+      });
+    });
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
+  }
+  
+  // Remove href from all wishlist buttons on page load to prevent redirects
+  function removeWishlistHrefs() {
+    var buttons = document.querySelectorAll('a.tinvwl_add_to_wishlist_button[href]');
+    console.log(new Date().toISOString(), '[LMB Wishlist] Removing href from', buttons.length, 'buttons');
+    for (var i = 0; i < buttons.length; i++) {
+      var btn = buttons[i];
+      var href = btn.getAttribute('href');
+      if (href) {
+        btn.setAttribute('data-original-href', href);
+        btn.removeAttribute('href');
+      }
+    }
+  }
+  
+  // Run on DOM ready
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    removeWishlistHrefs();
+  }
+  document.addEventListener('DOMContentLoaded', removeWishlistHrefs);
+  
   document.addEventListener('click', function (e) {
     var btn = (e.target && e.target.closest)
       ? e.target.closest('a.tinvwl_add_to_wishlist_button')
@@ -16,6 +94,7 @@
     if (!btn) {
       return;
     }
+    console.log(new Date().toISOString(), '[LMB Wishlist] Click detected on wishlist button');
     e.preventDefault();
   }, true);
 })();
@@ -28,7 +107,23 @@
   var LMB_POPUP_MS = 4000;
   var LMB_CLOSE_TIMER = null;
   function getModal() {
-    return document.querySelector('.tinvwl_added_to_wishlist.tinv-modal');
+    var modal = document.querySelector('.tinvwl_added_to_wishlist.tinv-modal');
+    console.log(new Date().toISOString(), '[LMB Wishlist] getModal result:', !!modal);
+    
+    // Debug: check alternatieven
+    if (!modal) {
+      var alt1 = document.querySelector('.tinvwl_added_to_wishlist');
+      var alt2 = document.querySelector('.tinv-modal');
+      var alt3 = document.querySelector('div[class*="tinvwl"]:not(body)');
+      var alt4 = document.querySelector('.dialog-body');
+      var alt5 = document.querySelector('[role="dialog"]');
+      console.log(new Date().toISOString(), '[LMB Wishlist] Alt modals - alt1:', !!alt1, 'alt2:', !!alt2, 'alt3:', !!alt3, 'alt4:', !!alt4, 'alt5:', !!alt5);
+      if (alt3) console.log(new Date().toISOString(), '[LMB Wishlist] Found alt3 classes:', alt3.className);
+      if (alt4) console.log(new Date().toISOString(), '[LMB Wishlist] Found alt4 classes:', alt4.className);
+      if (alt5) console.log(new Date().toISOString(), '[LMB Wishlist] Found alt5 classes:', alt5.className);
+    }
+    
+    return modal;
   }
   function keepOpen(modal) {
     if (!modal) return;
@@ -59,6 +154,7 @@
     }, LMB_POPUP_MS);
   }
   function onPopupLikelyOpened() {
+    console.log(new Date().toISOString(), '[LMB Wishlist] onPopupLikelyOpened called');
     setTimeout(function () {
       var modal = getModal();
       if (!modal) return;
@@ -74,6 +170,7 @@
   document.addEventListener('click', function (e) {
     var btn = (e.target && e.target.closest) ? e.target.closest('a.tinvwl_add_to_wishlist_button') : null;
     if (!btn) return;
+    console.log(new Date().toISOString(), '[LMB Wishlist] Popup timing - click detected, calling onPopupLikelyOpened');
     onPopupLikelyOpened();
   });
   if (window.MutationObserver) {
