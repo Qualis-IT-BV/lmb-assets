@@ -8,6 +8,8 @@
 // La Maison Bossché – Wishlist Click Behavior
 // =============================
 (function () {
+  var VERSION = null; // Set to 'X.Y.Z' for releases
+  var BUILD = 'dev-20260118.004';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   
   // Alleen loggen als logger beschikbaar is
@@ -17,7 +19,8 @@
     }
   }
   
-  log('info', 'Init: Click Behavior');
+  var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
+  log('info', 'Wishlist Click Behavior initialized (' + versionInfo + ')');
   
   // Monitor AJAX calls
   var originalFetch = window.fetch;
@@ -112,6 +115,8 @@
 // La Maison Bossché – Wishlist Popup Timing
 // =============================
 (function () {
+  var VERSION = null; // Set to 'X.Y.Z' for releases
+  var BUILD = 'dev-20260118.004';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -119,7 +124,8 @@
     }
   }
   
-  log('info', 'Init: Popup Timing');
+  var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
+  log('info', 'Wishlist Popup Timing initialized (' + versionInfo + ')');
   var LMB_POPUP_MS = 4000;
   var LMB_CLOSE_TIMER = null;
   function getModal() {
@@ -208,6 +214,8 @@
 // La Maison Bossché – Wishlist Image Overlay Scripts
 // =============================
 (function () {
+  var VERSION = null; // Set to 'X.Y.Z' for releases
+  var BUILD = 'dev-20260118.004';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -215,7 +223,8 @@
     }
   }
   
-  log('info', 'Init: Image Overlay Scripts');
+  var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
+  log('info', 'Wishlist Image Overlay Scripts initialized (' + versionInfo + ')');
   var WISHLIST_URL = '/wishlist/';
   function normalizeContent(val) {
     if (!val || val === 'none' || val === '""' || val === '\'\'') return '';
