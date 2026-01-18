@@ -1,133 +1,101 @@
 /* Project: La Maison Bossché
  * Component: Wishlist
- * Build: dev-20260118.001
- * Source: Debugged & tested via Chrome DevTools Overrides
- * Changes: 
- * - Fixed DOMContentLoaded timing issue (check document.readyState)
- * - Added parent link navigation blocking (temp href removal)
- * - Added redirect blocking attempts (partial - see known-issues.md)
- * - Added comprehensive debug logging with timestamps
- * - All functionality working except redirect on add (TI plugin issue)
+ * Build: dev-20260118.003
+ * Source: Custom CSS & JS plugin migratie (alfa release v.0.0.1)
  */
-
-function logDebug(msg) {
-  var now = new Date();
-  var timestamp = now.getHours() + ':' + 
-    ('0' + now.getMinutes()).slice(-2) + ':' + 
-    ('0' + now.getSeconds()).slice(-2) + '.' + 
-    ('00' + now.getMilliseconds()).slice(-3);
-  console.log('[' + timestamp + '] [LMB DEBUG] ' + msg);
-}
-
-logDebug('Wishlist.js - Script loaded');
 
 // =============================
 // La Maison Bossché – Wishlist Click Behavior
 // =============================
 (function () {
-  logDebug('Click Behavior - IIFE started');
+  console.log(new Date().toISOString(), '[LMB Wishlist] Init: Click Behavior');
   
-  // Blokkeer redirects naar /wishlist/ pagina na toevoegen
-  var blockWishlistRedirect = false;
-  var wishlistClickTime = 0;
-  
-  // Methode 1: Blokkeer beforeunload
-  window.addEventListener('beforeunload', function(e) {
-    if (blockWishlistRedirect) {
-      var timeSinceClick = Date.now() - wishlistClickTime;
-      if (timeSinceClick < 3000) {
-        logDebug('Click Behavior: BLOCKING page unload (beforeunload) - ' + timeSinceClick + 'ms since click');
-        e.preventDefault();
-        e.returnValue = '';
-        blockWishlistRedirect = false;
-        return '';
-      }
-    }
-  });
-  
-  // Methode 2: Override location methods
-  var originalAssign = window.location.assign;
-  var originalReplace = window.location.replace;
-  
-  window.location.assign = function(url) {
-    if (blockWishlistRedirect && url && url.indexOf('/wishlist/') !== -1) {
-      logDebug('Click Behavior: BLOCKED location.assign to: ' + url);
-      blockWishlistRedirect = false;
-      return;
-    }
-    return originalAssign.call(window.location, url);
+  // Monitor AJAX calls
+  var originalFetch = window.fetch;
+  window.fetch = function() {
+    console.log(new Date().toISOString(), '[LMB Wishlist] AJAX fetch:', arguments[0]);
+    return originalFetch.apply(this, arguments);
   };
   
-  window.location.replace = function(url) {
-    if (blockWishlistRedirect && url && url.indexOf('/wishlist/') !== -1) {
-      logDebug('Click Behavior: BLOCKED location.replace to: ' + url);
-      blockWishlistRedirect = false;
+  // Monitor new DOM elements
+  if (window.MutationObserver) {
+    var bodyObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1 && node.className && typeof node.className === 'string') {
+            if (node.className.indexOf('tinv') !== -1 || node.className.indexOf('wishlist') !== -1) {
+              console.log(new Date().toISOString(), '[LMB Wishlist] New element added with classes:', node.className);
+              
+              // If popup is added, make it visible immediately!
+              if (node.className.indexOf('tinvwl_added_to_wishlist') !== -1 && node.className.indexOf('tinv-modal') !== -1) {
+                console.log(new Date().toISOString(), '[LMB Wishlist] POPUP DETECTED - forcing visibility NOW');
+                
+                // Force popup to be visible (from Popup Timing section)
+                if (node.className.indexOf('tinv-modal-open') === -1) {
+                  node.className += ' tinv-modal-open';
+                }
+                var overlay = node.querySelector('.tinv-overlay');
+                if (overlay) {
+                  overlay.style.setProperty('display', 'block', 'important');
+                  overlay.style.setProperty('opacity', '1', 'important');
+                  overlay.style.setProperty('visibility', 'visible', 'important');
+                }
+                node.style.setProperty('display', 'block', 'important');
+                node.style.setProperty('opacity', '1', 'important');
+                node.style.setProperty('visibility', 'visible', 'important');
+                node.style.setProperty('pointer-events', 'auto', 'important');
+                node.style.setProperty('z-index', '999999', 'important');
+                
+                console.log(new Date().toISOString(), '[LMB Wishlist] Popup styles applied');
+                
+                // Restore hrefs after popup appears (redirect now allowed)
+                setTimeout(function() {
+                  var buttons = document.querySelectorAll('a.tinvwl_add_to_wishlist_button[data-original-href]');
+                  for (var i = 0; i < buttons.length; i++) {
+                    var btn = buttons[i];
+                    btn.setAttribute('href', btn.getAttribute('data-original-href'));
+                    btn.removeAttribute('data-original-href');
+                  }
+                  console.log(new Date().toISOString(), '[LMB Wishlist] Restored all hrefs after popup');
+                }, 5000);
+              }
+            }
+          }
+        });
+      });
+    });
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
+  }
+  
+  // Remove href from all wishlist buttons on page load to prevent redirects
+  function removeWishlistHrefs() {
+    var buttons = document.querySelectorAll('a.tinvwl_add_to_wishlist_button[href]');
+    console.log(new Date().toISOString(), '[LMB Wishlist] Removing href from', buttons.length, 'buttons');
+    for (var i = 0; i < buttons.length; i++) {
+      var btn = buttons[i];
+      var href = btn.getAttribute('href');
+      if (href) {
+        btn.setAttribute('data-original-href', href);
+        btn.removeAttribute('href');
+      }
+    }
+  }
+  
+  // Run on DOM ready
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    removeWishlistHrefs();
+  }
+  document.addEventListener('DOMContentLoaded', removeWishlistHrefs);
+  
+  document.addEventListener('click', function (e) {
+    var btn = (e.target && e.target.closest)
+      ? e.target.closest('a.tinvwl_add_to_wishlist_button')
+      : null;
+    if (!btn) {
       return;
     }
-    return originalReplace.call(window.location, url);
-  };
-  
-  // Methode 3: Try to intercept TI Wishlist AJAX success callback
-  (function() {
-    if (window.jQuery) {
-      var originalAjax = jQuery.ajax;
-      jQuery.ajax = function(options) {
-        if (options && options.url && options.url.indexOf('tinvwl') !== -1) {
-          logDebug('Click Behavior: Intercepted TI Wishlist AJAX call');
-          var originalSuccess = options.success;
-          options.success = function(response) {
-            logDebug('Click Behavior: TI Wishlist AJAX success, checking for redirect');
-            if (blockWishlistRedirect && response && typeof response === 'object' && response.redirect) {
-              logDebug('Click Behavior: BLOCKED TI redirect in AJAX response: ' + response.redirect);
-              delete response.redirect;
-            }
-            if (originalSuccess) {
-              return originalSuccess.apply(this, arguments);
-            }
-          };
-        }
-        return originalAjax.call(jQuery, options);
-      };
-    }
-  })();
-  
-  // Strategie: Verwijder tijdelijk href van parent link bij wishlist click
-  document.addEventListener('mousedown', function (e) {
-    var target = e.target;
-    var wishlistBtn = target.closest ? target.closest('a.tinvwl_add_to_wishlist_button') : null;
-    
-    if (wishlistBtn) {
-      logDebug('Click Behavior: Mousedown on wishlist button detected');
-      blockWishlistRedirect = true;
-      wishlistClickTime = Date.now();
-      
-      setTimeout(function() {
-        blockWishlistRedirect = false;
-        logDebug('Click Behavior: Re-enabled redirects after timeout');
-      }, 3000);
-      
-      // Zoek de parent product link
-      var parentLink = wishlistBtn.parentElement;
-      while (parentLink && parentLink.tagName !== 'A') {
-        parentLink = parentLink.parentElement;
-      }
-      
-      if (parentLink && parentLink.tagName === 'A' && parentLink !== wishlistBtn) {
-        var originalHref = parentLink.getAttribute('href');
-        if (originalHref) {
-          logDebug('Click Behavior: Temporarily removing href from parent link');
-          parentLink.setAttribute('data-original-href', originalHref);
-          parentLink.removeAttribute('href');
-          
-          // Restore na een korte delay
-          setTimeout(function() {
-            parentLink.setAttribute('href', originalHref);
-            parentLink.removeAttribute('data-original-href');
-            logDebug('Click Behavior: Restored href to parent link');
-          }, 500);
-        }
-      }
-    }
+    console.log(new Date().toISOString(), '[LMB Wishlist] Click detected on wishlist button');
+    e.preventDefault();
   }, true);
 })();
 
@@ -135,18 +103,30 @@ logDebug('Wishlist.js - Script loaded');
 // La Maison Bossché – Wishlist Popup Timing
 // =============================
 (function () {
-  logDebug('Popup Timing - IIFE started');
+  console.log(new Date().toISOString(), '[LMB Wishlist] Init: Popup Timing');
   var LMB_POPUP_MS = 4000;
   var LMB_CLOSE_TIMER = null;
   function getModal() {
-    return document.querySelector('.tinvwl_added_to_wishlist.tinv-modal');
+    var modal = document.querySelector('.tinvwl_added_to_wishlist.tinv-modal');
+    console.log(new Date().toISOString(), '[LMB Wishlist] getModal result:', !!modal);
+    
+    // Debug: check alternatieven
+    if (!modal) {
+      var alt1 = document.querySelector('.tinvwl_added_to_wishlist');
+      var alt2 = document.querySelector('.tinv-modal');
+      var alt3 = document.querySelector('div[class*="tinvwl"]:not(body)');
+      var alt4 = document.querySelector('.dialog-body');
+      var alt5 = document.querySelector('[role="dialog"]');
+      console.log(new Date().toISOString(), '[LMB Wishlist] Alt modals - alt1:', !!alt1, 'alt2:', !!alt2, 'alt3:', !!alt3, 'alt4:', !!alt4, 'alt5:', !!alt5);
+      if (alt3) console.log(new Date().toISOString(), '[LMB Wishlist] Found alt3 classes:', alt3.className);
+      if (alt4) console.log(new Date().toISOString(), '[LMB Wishlist] Found alt4 classes:', alt4.className);
+      if (alt5) console.log(new Date().toISOString(), '[LMB Wishlist] Found alt5 classes:', alt5.className);
+    }
+    
+    return modal;
   }
   function keepOpen(modal) {
-    if (!modal) {
-      logDebug('keepOpen: Modal not found - might not be visible yet');
-      return;
-    }
-    logDebug('keepOpen: Found modal, forcing it open');
+    if (!modal) return;
     if (modal.className.indexOf('tinv-modal-open') === -1) {
       modal.className += ' tinv-modal-open';
     }
@@ -174,6 +154,7 @@ logDebug('Wishlist.js - Script loaded');
     }, LMB_POPUP_MS);
   }
   function onPopupLikelyOpened() {
+    console.log(new Date().toISOString(), '[LMB Wishlist] onPopupLikelyOpened called');
     setTimeout(function () {
       var modal = getModal();
       if (!modal) return;
@@ -189,7 +170,7 @@ logDebug('Wishlist.js - Script loaded');
   document.addEventListener('click', function (e) {
     var btn = (e.target && e.target.closest) ? e.target.closest('a.tinvwl_add_to_wishlist_button') : null;
     if (!btn) return;
-    logDebug('Popup Timing: Wishlist button clicked, triggering popup timing');
+    console.log(new Date().toISOString(), '[LMB Wishlist] Popup timing - click detected, calling onPopupLikelyOpened');
     onPopupLikelyOpened();
   });
   if (window.MutationObserver) {
@@ -211,7 +192,7 @@ logDebug('Wishlist.js - Script loaded');
 // La Maison Bossché – Wishlist Image Overlay Scripts
 // =============================
 (function () {
-  logDebug('Image Overlay - IIFE started');
+  console.log(new Date().toISOString(), '[LMB Wishlist] Init: Image Overlay Scripts');
   var WISHLIST_URL = '/wishlist/';
   function normalizeContent(val) {
     if (!val || val === 'none' || val === '""' || val === '\'\'') return '';
@@ -242,7 +223,7 @@ logDebug('Wishlist.js - Script loaded');
   }
   function moveWishlistButtons() {
     var products = document.querySelectorAll('li.product');
-    var count = 0;
+    console.log(new Date().toISOString(), '[LMB Wishlist] moveWishlistButtons - found', products.length, 'products');
     var i;
     for (i = 0; i < products.length; i++) {
       var product = products[i];
@@ -257,10 +238,8 @@ logDebug('Wishlist.js - Script loaded');
       }
       if (!container.contains(btn)) {
         container.appendChild(btn);
-        count++;
       }
     }
-    logDebug('moveWishlistButtons: Moved ' + count + ' buttons out of ' + products.length + ' products');
   }
   function tryReadHeaderIcon() {
     var headerLink = document.querySelector('a.wishlist_products_counter');
@@ -291,7 +270,6 @@ logDebug('Wishlist.js - Script loaded');
   function applyWishlistState(ids) {
     var buttons = document.querySelectorAll('li.product a.tinvwl_add_to_wishlist_button[data-tinv-wl-product]');
     var i;
-    logDebug('applyWishlistState: Found ' + Object.keys(ids).length + ' items in wishlist, ' + buttons.length + ' buttons to update');
     for (i = 0; i < buttons.length; i++) {
       var btn = buttons[i];
       var pid = btn.getAttribute('data-tinv-wl-product');
@@ -316,9 +294,19 @@ logDebug('Wishlist.js - Script loaded');
       })
       .catch(function () {});
   }
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log(new Date().toISOString(), '[LMB Wishlist] DOMContentLoaded triggered');
+    moveWishlistButtons();
+    setTimeout(moveWishlistButtons, 300);
+    setTimeout(moveWishlistButtons, 900);
+    setTimeout(moveWishlistButtons, 2000);
+    setTimeout(syncWishlistState, 800);
+    setTimeout(startIconRetries, 300);
+  });
   
-  function initWishlist() {
-    logDebug('initWishlist triggered');
+  // Check if DOM is already loaded (script loaded late)
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    console.log(new Date().toISOString(), '[LMB Wishlist] DOM already loaded, running immediately');
     moveWishlistButtons();
     setTimeout(moveWishlistButtons, 300);
     setTimeout(moveWishlistButtons, 900);
@@ -327,19 +315,8 @@ logDebug('Wishlist.js - Script loaded');
     setTimeout(startIconRetries, 300);
   }
   
-  // Check if DOMContentLoaded already fired
-  if (document.readyState === 'loading') {
-    logDebug('DOMContentLoaded not yet fired, waiting...');
-    document.addEventListener('DOMContentLoaded', function () {
-      logDebug('DOMContentLoaded event fired (via listener)');
-      initWishlist();
-    });
-  } else {
-    logDebug('DOMContentLoaded already fired, executing directly');
-    initWishlist();
-  }
   window.addEventListener('load', function () {
-    logDebug('Window load event fired');
+    console.log(new Date().toISOString(), '[LMB Wishlist] Window load event triggered');
     startIconRetries();
     setTimeout(syncWishlistState, 1200);
   });
