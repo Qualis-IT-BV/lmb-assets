@@ -1,6 +1,20 @@
 /*
- * Build: 2026.01.17-06
- * Purpose: Toggle loading of any asset in /assets (excl. cdn.jsdelivr.net) from GitHub CDN
+ * GitHub CSS & JS Testing / Verification Script
+ * Version: 1.0
+ * Last Change: 2026-01-18
+ * 
+ * Purpose: 
+ * Test specific feature branch assets directly from GitHub CDN without deploying.
+ * Allows selective loading of individual CSS/JS files from a feature branch 
+ * while keeping other assets unchanged.
+ * 
+ * Usage:
+ * 1. Set BRANCH to your feature branch name
+ * 2. Toggle ASSETS entries to test specific files
+ * 3. Keep ENABLE_SCRIPT = true while testing
+ * 4. DISABLE this script when merging to dev/staging/main branches
+ * 
+ * Note: Excludes cdn.jsdelivr.net/ overrides (managed via Chrome DevTools)
  */
 
 (function () {
