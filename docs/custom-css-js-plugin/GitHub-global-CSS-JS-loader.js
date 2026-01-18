@@ -1,49 +1,84 @@
-
 /*
- * GitHub Global CSS & JS Loader
- * Version: 1.0
- * Last Change: 2026-01-18
- *
- * Purpose:
- * Automatically loads global.css and global.js from GitHub CDN (jsDelivr) based on environment.
- * Eliminates manual CSS/JS file management when deploying between environments.
- *
- * Environment Detection:
- *   - dev.lamaisonbossche.nl / test.lamaisonbossche.nl → dev branch
- *   - staging.lamaisonbossche.nl → staging branch
- *   - lamaisonbossche.nl → main branch
- *
- * Usage:
- * 1. Add this script to Custom CSS & JS Plugin (Footer, <body> end)
- * 2. Enable when deploying to dev/staging/production environments
- * 3. No configuration needed - automatically detects environment
- * 4. Disable GitHub-CSS-JS-Testing|Verification.js when using this loader
- *
- * Note: This is the primary loader for normal operations (dev/staging/production)
+ * La Maison Bossché - Global CSS & JS Loader
+ * Build: 2026.01.18-02
+ * Purpose: Load CSS & JS from GitHub CDN per environment
  */
 
 (function () {
-	var host = window.location.hostname;
-	var branch;
-	if (host === 'test.lamaisonbossche.nl' || host.indexOf('dev.') === 0) {
-		branch = 'dev';
-	} else if (host === 'staging.lamaisonbossche.nl' || host.indexOf('staging.') === 0) {
-		branch = 'staging';
-	} else {
-		branch = 'main';
-	}
 
-	// CSS laden
-	var css = document.createElement('link');
-	css.rel = 'stylesheet';
-	css.href = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + branch + '/css/global.css';
-	css.crossOrigin = 'anonymous';
-	document.head.appendChild(css);
+    // =============================
+    // 🎛️ CONFIGURATIE PER OMGEVING
+    // =============================
+    
+    var ENV = 'dev'; // 'dev', 'staging', of 'prod'
+    
+    var CONFIG = {
+        dev: {
+            // Gebruik COMMIT HASH voor betrouwbare cache-busting
+            ref: 'e17808e933dc5a66d249f9da4e2a7509a27dac57',
+            // Of gebruik branch (trager, cache issues):
+            // ref: 'dev',
+            
+            assets: {
+                css: ['css/global.css', 'css/blocksy-extra.css'],
+                js: ['js/global.js', 'js/components/Wishlist.js']
+            }
+        },
+        
+        staging: {
+            ref: 'staging', // of commit hash
+            assets: {
+                css: ['css/global.css', 'css/blocksy-extra.css'],
+                js: ['js/global.js', 'js/components/Wishlist.js']
+            }
+        },
+        
+        prod: {
+            ref: 'main', // of commit hash van laatste release
+            assets: {
+                css: ['css/global.css', 'css/blocksy-extra.css'],
+                js: ['js/global.js', 'js/components/Wishlist.js']
+            }
+        }
+    };
 
-	// JS laden
-	var s = document.createElement('script');
-	s.src = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + branch + '/js/global.js';
-	s.defer = true;
-	s.crossOrigin = 'anonymous';
-	document.body.appendChild(s);
+    // =============================
+    // 🔧 LOADER LOGIC (niet aanpassen)
+    // =============================
+    
+    var config = CONFIG[ENV];
+    if (!config) {
+        console.error('[LMB Loader] Invalid ENV:', ENV);
+        return;
+    }
+    
+    var BASE_URL = 'https://cdn.jsdelivr.net/gh/Qualis-IT-BV/lmb-assets@';
+    var url = BASE_URL + encodeURIComponent(config.ref) + '/assets/';
+    
+    console.log('[LMB Loader] Environment:', ENV, '| Ref:', config.ref);
+    
+    // Load CSS
+    if (config.assets.css) {
+        config.assets.css.forEach(function(file) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = url + file;
+            link.crossOrigin = 'anonymous';
+            document.head.appendChild(link);
+            console.log('[LMB Loader] CSS loaded:', file);
+        });
+    }
+    
+    // Load JS
+    if (config.assets.js) {
+        config.assets.js.forEach(function(file) {
+            var script = document.createElement('script');
+            script.src = url + file;
+            script.defer = true;
+            script.crossOrigin = 'anonymous';
+            (document.head || document.documentElement).appendChild(script);
+            console.log('[LMB Loader] JS loaded:', file);
+        });
+    }
+
 })();
