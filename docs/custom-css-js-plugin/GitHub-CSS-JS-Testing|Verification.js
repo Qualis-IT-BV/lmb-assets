@@ -1,6 +1,6 @@
 /*
  * GitHub CSS & JS Testing / Verification Script
- * Version: 1.0
+ * Version: 1.1
  * Last Change: 2026-01-18
  * 
  * Purpose: 
@@ -11,8 +11,9 @@
  * Usage:
  * 1. Set BRANCH to your feature branch name
  * 2. Toggle ASSETS entries to test specific files
- * 3. Keep ENABLE_SCRIPT = true while testing
- * 4. DISABLE this script when merging to dev/staging/main branches
+ * 3. Configure LOG_CONFIG to control logging per component
+ * 4. Keep ENABLE_SCRIPT = true while testing
+ * 5. DISABLE this script when merging to dev/staging/main branches
  * 
  * Note: Excludes cdn.jsdelivr.net/ overrides (managed via Chrome DevTools)
  */
@@ -25,8 +26,20 @@
     // 🧪 Globale kill switch (alles uit)
     var ENABLE_SCRIPT = true;
 
+    // 📊 Logging configuratie (per component + globaal)
+    // Levels: DEBUG, INFO, WARN, ERROR, SILENT
+    // DEBUG = alles zien | INFO = normale berichten | WARN = alleen warnings | ERROR = alleen errors | SILENT = uit
+    var LOG_CONFIG = {
+        global: 'INFO',        // Default voor alle componenten
+        Wishlist: 'DEBUG',     // Wishlist extra debug info
+        Logger: 'INFO',        // Logger utility zelf
+        // Voeg hier meer componenten toe:
+        // MyComponent: 'WARN',
+    };
+
     // 🎛️ Per-bestand toggles (relatief vanaf /assets/)
     var ASSETS = {
+        'js/logger.js': true,  // ⚠️ Logger moet ALTIJD als eerste geladen worden!
         'css/blocksy-extra.css': true,
         'css/global.css': false,
         'js/global.js': false,
@@ -48,6 +61,16 @@
        ========================= */
 
     if (!ENABLE_SCRIPT) return;
+
+    // INFO melding dat script actief is
+    console.info('%c' + new Date().toISOString() + ' %c[LMB Testing Script] %cACTIVE - Loading from branch: %c' + BRANCH, 
+        '',
+        'color: #FF9800; font-weight: bold', 
+        'color: #4CAF50; font-weight: bold',
+        'color: #2196F3; font-weight: bold');
+
+    // Stel log configuratie in VOOR het laden van scripts
+    window.LMB_LOG_CONFIG = LOG_CONFIG;
 
     var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
     var ENCODED_BRANCH = encodeURIComponent(BRANCH);
