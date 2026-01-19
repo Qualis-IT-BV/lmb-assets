@@ -2,18 +2,13 @@
  * Logger Configuration
  * Last Updated: 2026-01-19T00:30:00
  * 
- * Dit bestand definieert welke commit/branch en assets worden geladen
+ * Dit bestand definieert welke assets en loglevels worden gebruikt
  * door het GitHub CSS & JS Debugger Script.
  * 
- * Update alleen dit bestand bij nieuwe commits - het Testing Script
- * hoeft niet aangepast te worden.
+ * Note: Commit/branch wordt ingesteld in het Debugger script zelf (OVERRIDE_COMMIT)
  */
 
 window.LMB_TEST_CONFIG = {
-    // 🔀 Commit hash of branch naam
-    // TIP: Gebruik commit hash voor betrouwbare cache-busting
-    commit: 'c3a986d',
-    
     // 📊 Logging configuratie (per component + globaal)
     // Levels: DEBUG, INFO, WARN, ERROR, SILENT
     logConfig: {

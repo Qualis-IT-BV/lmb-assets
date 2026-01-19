@@ -13,12 +13,12 @@ Deze checklist doorlopen bij het deployen naar verschillende omgevingen.
 1. ✅ **Aanzetten:** `GitHub-global-CSS-JS-loader.js`
    - Locatie: Custom CSS & JS plugin → Footer code
    - Doel: Laadt `global.css` en `global.js` vanaf GitHub @dev branch
-   - Bestand: `docs/custom-css-js-plugin/GitHub-global-CSS-JS-loader.js`
+   - Bestand: `assets/js/external/custom-css-js-plugin/loader.js`
 
 2. ❌ **Uitzetten:** `GitHub-CSS-JS Debugger.js`
    - Locatie: Custom CSS & JS plugin → Footer code  
    - Doel: Selectief testen van individuele assets (dev only)
-   - Bestand: `docs/custom-css-js-plugin/GitHub-CSS-JS Debugger.js`
+   - Bestand: `assets/js/external/custom-css-js-plugin/debugger.js`
    - **Waarom uitzetten?** Anders worden de verkeerde versies geladen voor testing
 
 ### Verificatie na deployment
@@ -109,10 +109,8 @@ Als oude versie wordt geladen:
 
 ### Plugin script locaties
 
-- `docs/custom-css-js-plugin/GitHub-global-CSS-JS-loader.js` - Productie loader
-- `docs/custom-css-js-plugin/GitHub-CSS-JS Debugger.js` - Dev testing tool
-- `docs/custom-css-js-plugin/GitHub-global.css` - Legacy (niet meer in gebruik)
-- `docs/custom-css-js-plugin/GitHub-global.js` - Legacy (niet meer in gebruik)
+- `assets/js/external/custom-css-js-plugin/loader.js` - Productie loader
+- `assets/js/external/custom-css-js-plugin/debugger.js` - Dev testing tool
 
 ### Chrome DevTools Overrides
 

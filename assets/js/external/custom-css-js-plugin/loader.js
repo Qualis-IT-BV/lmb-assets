@@ -1,6 +1,10 @@
-/*
- * La Maison Bossché - GitHub global CSS & JS Loader
- * Build: 2026.01.18-02
+/* Project: La Maison Bossché
+ * Component: GitHub Global CSS & JS Loader
+ * Build: dev-20260119.002
+ * First Release: lmb-assets 0.0.2 (2026-01-18)
+ * Last Change: -
+ * Source: Renamed and moved from docs/custom-css-js-plugin/GitHub-global-CSS-JS-loader.js
+ * 
  * Purpose: Load global.css and global.js from GitHub CDN
  * 
  * Note: Update RELEASE_VERSION when creating a new release

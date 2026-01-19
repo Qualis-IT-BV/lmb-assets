@@ -69,7 +69,7 @@ Network tab → Filter `lmb-assets` → Verificeer URL's:
 
 ### Verwachte Console Output:
 ```
-[LMB Test] ACTIVE - Loading from commit: 014a999
+[LMB Debugger] ACTIVE - Loading from commit: 014a999
 2026-01-19T... INFO LMB Logger [Logger utility initialized...]
 2026-01-19T... INFO LMB Wishlist [Click Behavior initialized...]
 2026-01-19T... INFO LMB Wishlist [Popup Timing initialized...]
@@ -102,7 +102,7 @@ Network tab → Filter `lmb-assets` → Verificeer URL's:
 
 ### Verwachte Console Output:
 ```
-[LMB Test] ACTIVE - Loading from commit: dev
+[LMB Debugger] ACTIVE - Loading from commit: dev
 ```
 
 ### Verificatie:

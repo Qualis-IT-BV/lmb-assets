@@ -1,0 +1,149 @@
+/* Project: La Maison Bossché
+ * Component: GitHub CSS & JS Debugger
+ * Build: dev-20260120.001
+ * First Release: lmb-assets unreleased
+ * Last Change: -
+ * Source: Refactored from GitHub-CSS-JS-Testing|Verification.js (v1.0) in lmb-assets Release 0.0.2
+ * 
+ * Purpose: 
+ * Test specific feature branch assets directly from GitHub CDN without deploying.
+ * Loads configuration from logger-config.js for easy updates.
+ * 
+ * Usage:
+ * 1. Update logger-config.js with commit hash and assets to test
+ * 2. Keep ENABLE_SCRIPT = true while testing
+ * 3. DISABLE this script when merging to dev/staging/main branches
+ * 
+ * Note: Excludes cdn.jsdelivr.net/ overrides (managed via Chrome DevTools)
+ */
+
+(function () {
+
+    // 🧪 Globale kill switch (alles uit)
+    var ENABLE_SCRIPT = true;
+    
+    // 🎯 Override: Voer hier een commit-hash, branch of version in om logger-config.js te overschrijven
+    // Voorbeelden: '8a3f2c1', 'feature/my-branch', 'main', 'v1.2.0'
+    // Laat leeg (null) om logger-config.js waarde te gebruiken
+    var OVERRIDE_COMMIT = 'dev';
+    
+    // 🔀 USE GLOBAL MODE
+    // true: Laad alleen global.js (inclusief alle componenten) met algemeen loglevel
+    // false: Gebruik specifieke assets en loglevels uit logger-config.js
+    var USE_GLOBAL = false;
+    
+    // 📊 Loglevel voor USE_GLOBAL mode
+    // Levels: DEBUG, INFO, WARN, ERROR, SILENT
+    var GLOBAL_LOGLEVEL = 'INFO';
+    
+    if (!ENABLE_SCRIPT) return;
+    
+    // Laad logger-config.js vanaf GitHub
+    function loadConfig(callback, errorCallback) {
+        var CONFIG_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + 
+                         encodeURIComponent(OVERRIDE_COMMIT || 'dev') + 
+                         '/assets/js/tools/logger/logger-config.js';
+        
+        console.log('[LMB Debugger] Loading config from:', CONFIG_URL);
+        
+        var script = document.createElement('script');
+        script.src = CONFIG_URL;
+        script.crossOrigin = 'anonymous';
+        
+        var timeout = setTimeout(function() {
+            errorCallback('Timeout: logger-config.js could not be loaded after 10 seconds');
+        }, 10000);
+        
+        script.onload = function() {
+            clearTimeout(timeout);
+            if (window.LMB_TEST_CONFIG) {
+                console.log('[LMB Debugger] Config loaded successfully');
+                callback();
+            } else {
+                errorCallback('logger-config.js loaded, but window.LMB_TEST_CONFIG is not defined');
+            }
+        };
+        
+        script.onerror = function() {
+            clearTimeout(timeout);
+            errorCallback('Error loading logger-config.js from ' + CONFIG_URL);
+        };
+        
+        document.head.appendChild(script);
+    }
+    
+    loadConfig(function() {
+        var config = window.LMB_TEST_CONFIG;
+        var BRANCH = OVERRIDE_COMMIT || 'dev'; // Fallback to 'dev' if not set
+        var LOG_CONFIG, ASSETS;
+        
+        if (USE_GLOBAL) {
+            // USE_GLOBAL mode: alleen global.js laden met algemeen loglevel
+            console.info('[LMB Debugger] USE_GLOBAL mode active - Loading global.js with loglevel:', GLOBAL_LOGLEVEL);
+            
+            LOG_CONFIG = {
+                default: GLOBAL_LOGLEVEL
+            };
+            
+            ASSETS = {
+                'js/global.js': true
+            };
+        } else {
+            // Normale mode: gebruik config uit logger-config.js
+            console.info('[LMB Debugger] Config mode - Using logger-config.js settings');
+            LOG_CONFIG = config.logConfig;
+            ASSETS = config.assets;
+        }
+
+        // Niet meenemen: assets/cdn.jsdelivr.net/...
+        var EXCLUDE_PREFIX = 'cdn.jsdelivr.net/';
+
+        // INFO melding dat script actief is
+        console.info('[LMB Debugger] ACTIVE - Loading from commit:', BRANCH);
+
+        // Stel versie en log configuratie in VOOR het laden van scripts
+        window.LMB_LOADER_VERSION = BRANCH;
+        window.LMB_LOG_CONFIG = LOG_CONFIG;
+
+        var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
+        var ENCODED_BRANCH = encodeURIComponent(BRANCH);
+
+        function injectAsset(relPath) {
+            var url = BASE_URL + ENCODED_BRANCH + '/assets/' + relPath;
+            if (relPath.endsWith('.css')) {
+                var css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = url;
+                css.crossOrigin = 'anonymous';
+                document.head.appendChild(css);
+            } else if (relPath.endsWith('.js')) {
+                var s = document.createElement('script');
+                s.src = url;
+                s.defer = true;
+                s.crossOrigin = 'anonymous';
+                (document.head || document.documentElement).appendChild(s);
+            }
+        }
+
+        function inject() {
+            for (var relPath in ASSETS) {
+                if (
+                    ASSETS[relPath] &&
+                    relPath.indexOf(EXCLUDE_PREFIX) !== 0 // skip cdn.jsdelivr.net
+                ) {
+                    injectAsset(relPath);
+                }
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inject);
+        } else {
+            inject();
+        }
+    }, function(errorMessage) {
+        console.error('[LMB Debugger] ERROR:', errorMessage);
+        console.error('[LMB Debugger] Script not executed. Check if logger-config.js exists on GitHub.');
+    });
+
+})();
