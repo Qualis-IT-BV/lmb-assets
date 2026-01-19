@@ -1,6 +1,8 @@
 /* Project: La Maison Bossché
  * Component: Logger Utility
- * Build: dev-20260118.001
+ * Build: dev-20260119.001
+ * First Release: lmb-assets unreleased
+ * Last Change: -
  * Source: Custom development
  * 
  * Purpose: 
@@ -35,11 +37,9 @@
     ERROR: '#F44336'
   };
 
-  // Default configuratie (als window.LMB_LOG_CONFIG niet bestaat)
+  // Minimale fallback (logger.js wordt normaal geladen via logger-config.js)
   var DEFAULT_CONFIG = {
-    global: 'INFO',     // Default voor alle componenten
-    Wishlist: 'DEBUG',  // Per-component override voorbeeld
-    Logger: 'INFO'      // Logger zelf
+    default: 'INFO'
   };
 
   // Verkrijg configuratie van window of gebruik defaults
@@ -50,7 +50,7 @@
   // Verkrijg log level voor specifiek component
   function getLevelForComponent(component) {
     var config = getConfig();
-    var levelName = config[component] || config.global || 'INFO';
+    var levelName = config[component] || config.default || 'INFO';
     return LEVELS[levelName.toUpperCase()] || LEVELS.INFO;
   }
 
@@ -71,12 +71,13 @@
     function log(level, levelName, args) {
       if (!shouldLog(level)) return;
 
-      var prefix = timestamp() + ' [LMB ' + componentName + ']';
+      var prefix = timestamp();
       var color = LEVEL_COLORS[levelName];
       var allArgs = [
-        '%c' + prefix + ' %c' + levelName,
-        'color: #666; font-weight: normal',
-        'color: ' + color + '; font-weight: bold'
+        '%c' + prefix + ' %c' + levelName + ' %cLMB ' + componentName,
+        '', // standaard kleur voor tijd
+        'color: ' + color + '; font-weight: bold', // kleur voor level
+        'color: #666; font-weight: normal' // grijze kleur voor component
       ].concat(Array.prototype.slice.call(args));
 
       // Gebruik juiste console methode
@@ -121,9 +122,8 @@
 
   // Logger voor de logger zelf
   var selfLogger = createLogger('Logger');
-  selfLogger.info('Logger utility initialized', {
-    config: getConfig(),
-    version: 'dev-20260118.001'
+  selfLogger.info('Logger utility initialized (logger.js Build: dev-20260119.001)', {
+    config: getConfig()
   });
 
 })();

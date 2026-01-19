@@ -1,112 +1,96 @@
 /*
  * GitHub CSS & JS Testing / Verification Script
- * Version: 1.1
- * Last Change: 2026-01-18
+ * Version: 1.2
+ * Last Change: 2026-01-19
  * 
  * Purpose: 
  * Test specific feature branch assets directly from GitHub CDN without deploying.
- * Allows selective loading of individual CSS/JS files from a feature branch 
- * while keeping other assets unchanged.
+ * Loads configuration from logger-config.js for easy updates.
  * 
  * Usage:
- * 1. Set BRANCH to your feature branch name
- * 2. Toggle ASSETS entries to test specific files
- * 3. Configure LOG_CONFIG to control logging per component
- * 4. Keep ENABLE_SCRIPT = true while testing
- * 5. DISABLE this script when merging to dev/staging/main branches
+ * 1. Update logger-config.js with commit hash and assets to test
+ * 2. Keep ENABLE_SCRIPT = true while testing
+ * 3. DISABLE this script when merging to dev/staging/main branches
  * 
  * Note: Excludes cdn.jsdelivr.net/ overrides (managed via Chrome DevTools)
  */
 
 (function () {
 
-    // 🔀 Branch waarmee je wilt testen (exacte GitHub branchnaam)
-    var BRANCH = 'feature/migrate-blocksy-assets-20260116';
-
     // 🧪 Globale kill switch (alles uit)
     var ENABLE_SCRIPT = true;
-
-    // 📊 Logging configuratie (per component + globaal)
-    // Levels: DEBUG, INFO, WARN, ERROR, SILENT
-    // DEBUG = alles zien | INFO = normale berichten | WARN = alleen warnings | ERROR = alleen errors | SILENT = uit
-    var LOG_CONFIG = {
-        global: 'INFO',        // Default voor alle componenten
-        Wishlist: 'DEBUG',     // Wishlist extra debug info
-        Logger: 'INFO',        // Logger utility zelf
-        // Voeg hier meer componenten toe:
-        // MyComponent: 'WARN',
-    };
-
-    // 🎛️ Per-bestand toggles (relatief vanaf /assets/)
-    var ASSETS = {
-        'js/logger.js': true,  // ⚠️ Logger moet ALTIJD als eerste geladen worden!
-        'css/blocksy-extra.css': true,
-        'css/global.css': false,
-        'js/global.js': false,
-        'js/components/Wishlist.js': true,
-        'Legacy/Custom-CSS-JS-Plugin/Wishlist Image-Overlay-Scripts.js': false,
-        'Legacy/Custom-CSS-JS-Plugin/Wishlist-Click-Behavior.js': false,
-        'Legacy/Custom-CSS-JS-Plugin/Wishlist-Popup-Timing.js': false,
-        // Voeg hier meer assets toe, bijv.:
-        // 'js/components/Anders.js': false,
-        
-        
-    };
-
-    // Niet meenemen: assets/cdn.jsdelivr.net/...
-    var EXCLUDE_PREFIX = 'cdn.jsdelivr.net/';
-
-    /* =========================
-       INTERNALS (niet aanpassen)
-       ========================= */
-
+    
+    // 🎯 Override: Voer hier een commit-hash, branch of version in om logger-config.js te overschrijven
+    // Voorbeelden: '8a3f2c1', 'feature/my-branch', 'main', 'v1.2.0'
+    // Laat leeg (null) om logger-config.js waarde te gebruiken
+    var OVERRIDE_COMMIT = null;
+    
     if (!ENABLE_SCRIPT) return;
-
-    // INFO melding dat script actief is
-    console.info('%c' + new Date().toISOString() + ' %c[LMB Testing Script] %cACTIVE - Loading from branch: %c' + BRANCH, 
-        '',
-        'color: #FF9800; font-weight: bold', 
-        'color: #4CAF50; font-weight: bold',
-        'color: #2196F3; font-weight: bold');
-
-    // Stel log configuratie in VOOR het laden van scripts
-    window.LMB_LOG_CONFIG = LOG_CONFIG;
-
-    var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
-    var ENCODED_BRANCH = encodeURIComponent(BRANCH);
-
-    function injectAsset(relPath) {
-        var url = BASE_URL + ENCODED_BRANCH + '/assets/' + relPath;
-        if (relPath.endsWith('.css')) {
-            var css = document.createElement('link');
-            css.rel = 'stylesheet';
-            css.href = url;
-            css.crossOrigin = 'anonymous';
-            document.head.appendChild(css);
-        } else if (relPath.endsWith('.js')) {
-            var s = document.createElement('script');
-            s.src = url;
-            s.defer = true;
-            s.crossOrigin = 'anonymous';
-            (document.head || document.documentElement).appendChild(s);
+    
+    // Wacht tot logger-config.js is geladen
+    function waitForConfig(callback) {
+        if (window.LMB_TEST_CONFIG) {
+            callback();
+        } else {
+            setTimeout(function() { waitForConfig(callback); }, 50);
         }
     }
+    
+    waitForConfig(function() {
+        var config = window.LMB_TEST_CONFIG;
+        var BRANCH = OVERRIDE_COMMIT || config.commit;
+        var LOG_CONFIG = config.logConfig;
+        var ASSETS = config.assets;
 
-    function inject() {
-        for (var relPath in ASSETS) {
-            if (
-                ASSETS[relPath] &&
-                relPath.indexOf(EXCLUDE_PREFIX) !== 0 // skip cdn.jsdelivr.net
-            ) {
-                injectAsset(relPath);
+        // Niet meenemen: assets/cdn.jsdelivr.net/...
+        var EXCLUDE_PREFIX = 'cdn.jsdelivr.net/';
+
+        // INFO melding dat script actief is
+        console.info('%c' + new Date().toISOString() + ' %c[LMB Testing Script] %cACTIVE - Loading from commit: %c' + BRANCH, 
+            '',
+            'color: #FF9800; font-weight: bold', 
+            'color: #4CAF50; font-weight: bold',
+            'color: #2196F3; font-weight: bold');
+
+        // Stel log configuratie in VOOR het laden van scripts
+        window.LMB_LOG_CONFIG = LOG_CONFIG;
+
+        var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
+        var ENCODED_BRANCH = encodeURIComponent(BRANCH);
+
+        function injectAsset(relPath) {
+            var url = BASE_URL + ENCODED_BRANCH + '/assets/' + relPath;
+            if (relPath.endsWith('.css')) {
+                var css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = url;
+                css.crossOrigin = 'anonymous';
+                document.head.appendChild(css);
+            } else if (relPath.endsWith('.js')) {
+                var s = document.createElement('script');
+                s.src = url;
+                s.defer = true;
+                s.crossOrigin = 'anonymous';
+                (document.head || document.documentElement).appendChild(s);
             }
         }
-    }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', inject);
-    } else {
-        inject();
-    }
+        function inject() {
+            for (var relPath in ASSETS) {
+                if (
+                    ASSETS[relPath] &&
+                    relPath.indexOf(EXCLUDE_PREFIX) !== 0 // skip cdn.jsdelivr.net
+                ) {
+                    injectAsset(relPath);
+                }
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inject);
+        } else {
+            inject();
+        }
+    });
 
 })();

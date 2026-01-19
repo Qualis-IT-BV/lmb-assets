@@ -1,84 +1,44 @@
 /*
  * La Maison Bossché - Global CSS & JS Loader
  * Build: 2026.01.18-02
- * Purpose: Load CSS & JS from GitHub CDN per environment
+ * Purpose: Load global.css and global.js from GitHub CDN
+ * 
+ * Note: Update RELEASE_VERSION when creating a new release
+ *       (version changes alone do not require build increment)
  */
 
 (function () {
 
     // =============================
-    // 🎛️ CONFIGURATIE PER OMGEVING
+    // 🎯 RELEASE VERSION
     // =============================
-    
-    var ENV = 'dev'; // 'dev', 'staging', of 'prod'
-    
-    var CONFIG = {
-        dev: {
-            // Gebruik COMMIT HASH voor betrouwbare cache-busting
-            ref: 'e17808e933dc5a66d249f9da4e2a7509a27dac57',
-            // Of gebruik branch (trager, cache issues):
-            // ref: 'dev',
-            
-            assets: {
-                css: ['css/global.css', 'css/blocksy-extra.css'],
-                js: ['js/global.js', 'js/components/Wishlist.js']
-            }
-        },
-        
-        staging: {
-            ref: 'staging', // of commit hash
-            assets: {
-                css: ['css/global.css', 'css/blocksy-extra.css'],
-                js: ['js/global.js', 'js/components/Wishlist.js']
-            }
-        },
-        
-        prod: {
-            ref: 'main', // of commit hash van laatste release
-            assets: {
-                css: ['css/global.css', 'css/blocksy-extra.css'],
-                js: ['js/global.js', 'js/components/Wishlist.js']
-            }
-        }
-    };
+    // Update this value when creating a release (commit hash, version tag, or branch)
+    // Examples: 'c3a986d', 'v1.0.0', 'main'
+    var RELEASE_VERSION = 'c3a986d';
 
     // =============================
     // 🔧 LOADER LOGIC (niet aanpassen)
     // =============================
     
-    var config = CONFIG[ENV];
-    if (!config) {
-        console.error('[LMB Loader] Invalid ENV:', ENV);
-        return;
-    }
-    
     var BASE_URL = 'https://cdn.jsdelivr.net/gh/Qualis-IT-BV/lmb-assets@';
-    var url = BASE_URL + encodeURIComponent(config.ref) + '/assets/';
+    var url = BASE_URL + encodeURIComponent(RELEASE_VERSION) + '/assets/';
     
-    console.log('[LMB Loader] Environment:', ENV, '| Ref:', config.ref);
+    console.log('[LMB Global Loader] Loading from:', RELEASE_VERSION);
     
-    // Load CSS
-    if (config.assets.css) {
-        config.assets.css.forEach(function(file) {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = url + file;
-            link.crossOrigin = 'anonymous';
-            document.head.appendChild(link);
-            console.log('[LMB Loader] CSS loaded:', file);
-        });
-    }
+    // Load global.css
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = url + 'css/global.css';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+    console.log('[LMB Global Loader] CSS loaded: global.css');
     
-    // Load JS
-    if (config.assets.js) {
-        config.assets.js.forEach(function(file) {
-            var script = document.createElement('script');
-            script.src = url + file;
-            script.defer = true;
-            script.crossOrigin = 'anonymous';
-            (document.head || document.documentElement).appendChild(script);
-            console.log('[LMB Loader] JS loaded:', file);
-        });
-    }
+    // Load global.js
+    var script = document.createElement('script');
+    script.src = url + 'js/global.js';
+    script.defer = true;
+    script.crossOrigin = 'anonymous';
+    (document.head || document.documentElement).appendChild(script);
+    console.log('[LMB Global Loader] JS loaded: global.js');
 
 })();

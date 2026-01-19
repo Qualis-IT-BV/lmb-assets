@@ -1,6 +1,8 @@
 /* Project: La Maison Bossché
  * Component: Wishlist
- * Build: dev-20260118.004
+ * Build: dev-20260119.001
+ * First Release: lmb-assets unreleased
+ * Last Change: -
  * Source: Custom CSS & JS plugin migratie (alfa release v.0.0.1)
  */
 
@@ -9,7 +11,7 @@
 // =============================
 (function () {
   var VERSION = null; // Set to 'X.Y.Z' for releases
-  var BUILD = 'dev-20260118.004';
+  var BUILD = 'dev-20260119.001';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   
   // Alleen loggen als logger beschikbaar is
@@ -20,7 +22,7 @@
   }
   
   var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
-  log('info', 'Wishlist Click Behavior initialized (' + versionInfo + ')');
+  log('info', 'Click Behavior initialized (wishlist.js ' + versionInfo + ')');
   
   // Monitor AJAX calls
   var originalFetch = window.fetch;
@@ -116,7 +118,7 @@
 // =============================
 (function () {
   var VERSION = null; // Set to 'X.Y.Z' for releases
-  var BUILD = 'dev-20260118.004';
+  var BUILD = 'dev-20260119.001';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -125,7 +127,7 @@
   }
   
   var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
-  log('info', 'Wishlist Popup Timing initialized (' + versionInfo + ')');
+  log('info', 'Popup Timing initialized (wishlist.js ' + versionInfo + ')');
   var LMB_POPUP_MS = 4000;
   var LMB_CLOSE_TIMER = null;
   function getModal() {
@@ -215,7 +217,7 @@
 // =============================
 (function () {
   var VERSION = null; // Set to 'X.Y.Z' for releases
-  var BUILD = 'dev-20260118.004';
+  var BUILD = 'dev-20260119.001';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -224,7 +226,7 @@
   }
   
   var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
-  log('info', 'Wishlist Image Overlay Scripts initialized (' + versionInfo + ')');
+  log('info', 'Image Overlay Scripts initialized (wishlist.js ' + versionInfo + ')');
   var WISHLIST_URL = '/wishlist/';
   function normalizeContent(val) {
     if (!val || val === 'none' || val === '""' || val === '\'\'') return '';

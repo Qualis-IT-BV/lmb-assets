@@ -1,8 +1,13 @@
-/*
- * Project: La Maison Bossché
- * Repo: lmb-assets
- * Bestand: css/global.css
- * Version: 0.0.1
- * Laatst aangepast: 2026-01-11
- * Notities: algemene website CSS (basis)
+/* Project: La Maison Bossché
+ * Component: Global CSS
+ * Build: dev-20260119.001
+ * First Release: lmb-assets 0.0.1
+ * Last Change: -
+ * Source: Custom development
  */
+
+/* ====================================
+ * Component CSS Imports
+ * ==================================== */
+
+/* Component CSS wordt geladen via global.js (omgeving-afhankelijk) */
