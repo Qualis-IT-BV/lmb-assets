@@ -15,10 +15,10 @@ Deze checklist doorlopen bij het deployen naar verschillende omgevingen.
    - Doel: Laadt `global.css` en `global.js` vanaf GitHub @dev branch
    - Bestand: `docs/custom-css-js-plugin/GitHub-global-CSS-JS-loader.js`
 
-2. ❌ **Uitzetten:** `GitHub-CSS-JS-Testing|Verification.js`
+2. ❌ **Uitzetten:** `GitHub-CSS-JS Debugger.js`
    - Locatie: Custom CSS & JS plugin → Footer code  
    - Doel: Selectief testen van individuele assets (dev only)
-   - Bestand: `docs/custom-css-js-plugin/GitHub-CSS-JS-Testing|Verification.js`
+   - Bestand: `docs/custom-css-js-plugin/GitHub-CSS-JS Debugger.js`
    - **Waarom uitzetten?** Anders worden de verkeerde versies geladen voor testing
 
 ### Verificatie na deployment
@@ -46,7 +46,7 @@ Als oude versie wordt geladen:
 
 1. ✅ **GitHub-global-CSS-JS-loader blijft aan**
 2. ✅ Verander branch in loader naar `staging` (als staging aparte branch is)
-3. ❌ **GitHub-CSS-JS-Testing|Verification blijft uit**
+3. ❌ **GitHub-CSS-JS Debugger blijft uit**
 
 ### Verificatie
 
@@ -64,7 +64,7 @@ Als oude versie wordt geladen:
 
 1. ✅ **GitHub-global-CSS-JS-loader blijft aan**
 2. ✅ Branch wijzigt automatisch naar `main` (via hostname detectie)
-3. ❌ **GitHub-CSS-JS-Testing|Verification ALTIJD uit op productie**
+3. ❌ **GitHub-CSS-JS Debugger ALTIJD uit op productie**
 
 ### Pre-deployment checklist
 
@@ -88,15 +88,15 @@ Als oude versie wordt geladen:
 
 ### Setup
 
-1. ✅ **Aanzetten:** `GitHub-CSS-JS-Testing|Verification.js`
+1. ✅ **Aanzetten:** `GitHub-CSS-JS Debugger.js`
 2. ✅ Configureer welke assets lokaal getest worden
 3. ✅ Chrome DevTools → Sources → Overrides → Enable Local Overrides
-4. ✅ Selecteer: `lmb-assets/assets/css/cdn.jsdelivr.net/longurls/`
+4. ✅ Selecteer: `lmb-assets/overrides/`
 
 ### Testing workflow
 
 1. Bewerk bestanden in Chrome DevTools (of VS Code)
-2. Chrome slaat op in `longurls/` folder
+2. Chrome slaat op in `overrides/` folder
 3. Test direct in browser
 4. Wanneer het werkt: kopieer naar correcte locatie in repo
 5. Commit & push
@@ -110,12 +110,12 @@ Als oude versie wordt geladen:
 ### Plugin script locaties
 
 - `docs/custom-css-js-plugin/GitHub-global-CSS-JS-loader.js` - Productie loader
-- `docs/custom-css-js-plugin/GitHub-CSS-JS-Testing|Verification.js` - Dev testing tool
+- `docs/custom-css-js-plugin/GitHub-CSS-JS Debugger.js` - Dev testing tool
 - `docs/custom-css-js-plugin/GitHub-global.css` - Legacy (niet meer in gebruik)
 - `docs/custom-css-js-plugin/GitHub-global.js` - Legacy (niet meer in gebruik)
 
 ### Chrome DevTools Overrides
 
-- Locatie: `assets/css/cdn.jsdelivr.net/longurls/`
+- Locatie: `lmb-assets/overrides/`
 - In .gitignore: wordt niet naar repo gepushed
 - Workflow gedocumenteerd in: `docs/chrome-devtools-workflow.md`

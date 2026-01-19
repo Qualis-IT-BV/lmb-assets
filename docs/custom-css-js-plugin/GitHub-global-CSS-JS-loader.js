@@ -1,5 +1,5 @@
 /*
- * La Maison Bossché - Global CSS & JS Loader
+ * La Maison Bossché - GitHub global CSS & JS Loader
  * Build: 2026.01.18-02
  * Purpose: Load global.css and global.js from GitHub CDN
  * 

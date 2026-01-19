@@ -1,5 +1,5 @@
 /*
- * La Maison Bossché - Global CSS & JS Debugger
+ * La Maison Bossché - GitHub CSS & JS Debugger
  * Version: 1.2
  * Last Change: 2026-01-19
  * 

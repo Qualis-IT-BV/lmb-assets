@@ -3,7 +3,7 @@
  * Last Updated: 2026-01-19T00:30:00
  * 
  * Dit bestand definieert welke commit/branch en assets worden geladen
- * door het GitHub CSS & JS Testing/Verification Script.
+ * door het GitHub CSS & JS Debugger Script.
  * 
  * Update alleen dit bestand bij nieuwe commits - het Testing Script
  * hoeft niet aangepast te worden.
@@ -27,7 +27,7 @@ window.LMB_TEST_CONFIG = {
     // ⚠️ Logger moet ALTIJD als eerste!
     assets: {
         // JavaScript files
-        'js/logger.js': true,              // Logger utility (altijd eerst!)
+        'js/tools/logger/logger.js': true,              // Logger utility (altijd eerst!)
         'js/global.js': false,
         'js/components/Wishlist.js': true,
         

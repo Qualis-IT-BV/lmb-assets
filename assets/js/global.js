@@ -14,10 +14,10 @@
 	if (!version) {
 		console.warn(
 			'[LMB Components] WARNING: window.LMB_LOADER_VERSION is not set!\n\n' +
-			'global.js wordt bij voorkeur geladen via:\n' +
-			'1. GitHub-global-CSS-JS-loader.js (productie), OF\n' +
-			'2. GitHub-CSS-JS-Testing|Verification.js (testing)\n\n' +
-			'Terugvallen op hostname detection...'
+			'global.js should preferably be loaded via:\n' +
+			'1. GitHub-global-CSS-JS-loader.js (production), OR\n' +
+			'2. GitHub-CSS-JS Debugger.js (testing)\n\n' +
+			'Falling back to hostname detection...'
 		);
 		
 		// Fallback: detecteer branch op basis van hostname
@@ -29,10 +29,10 @@
 		} else if (host === 'staging.lamaisonbossche.nl' || host.indexOf('staging.') === 0) {
 			version = 'staging';
 		} else {
-			version = 'main';  // Default voor onbekende hostnames
+			version = 'main';  // Default for unknown hostnames
 		}
 		
-		console.warn('[LMB Components] Fallback actief - hostname detection gebruikt:', version);
+		console.warn('[LMB Components] Fallback active - using hostname detection:', version);
 	}
 	
 	var baseUrl = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + version + '/assets/';
