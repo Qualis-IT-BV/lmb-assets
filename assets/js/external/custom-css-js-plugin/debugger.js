@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: GitHub CSS & JS Debugger
- * Build: dev-20260120.001
+ * Build: dev-20260120.002
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Refactored from GitHub-CSS-JS-Testing|Verification.js (v1.0) in lmb-assets Release 0.0.2
@@ -38,7 +38,25 @@
     
     if (!ENABLE_SCRIPT) return;
     
-    // Laad logger-config.js vanaf GitHub
+    var BRANCH = OVERRIDE_COMMIT || 'dev';
+    
+    // USE_GLOBAL mode: skip config loading, use hardcoded values
+    if (USE_GLOBAL) {
+        console.info('[LMB Debugger] USE_GLOBAL mode - Loading global.js with loglevel:', GLOBAL_LOGLEVEL);
+        
+        var LOG_CONFIG = {
+            default: GLOBAL_LOGLEVEL
+        };
+        
+        var ASSETS = {
+            'js/global.js': true
+        };
+        
+        executeDebugger(BRANCH, LOG_CONFIG, ASSETS);
+        return;
+    }
+    
+    // Config mode: laad logger-config.js vanaf GitHub
     function loadConfig(callback, errorCallback) {
         var CONFIG_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + 
                          encodeURIComponent(OVERRIDE_COMMIT || 'dev') + 
@@ -74,39 +92,27 @@
     
     loadConfig(function() {
         var config = window.LMB_TEST_CONFIG;
-        var BRANCH = OVERRIDE_COMMIT || 'dev'; // Fallback to 'dev' if not set
-        var LOG_CONFIG, ASSETS;
-        
-        if (USE_GLOBAL) {
-            // USE_GLOBAL mode: alleen global.js laden met algemeen loglevel
-            console.info('[LMB Debugger] USE_GLOBAL mode active - Loading global.js with loglevel:', GLOBAL_LOGLEVEL);
-            
-            LOG_CONFIG = {
-                default: GLOBAL_LOGLEVEL
-            };
-            
-            ASSETS = {
-                'js/global.js': true
-            };
-        } else {
-            // Normale mode: gebruik config uit logger-config.js
-            console.info('[LMB Debugger] Config mode - Using logger-config.js settings');
-            LOG_CONFIG = config.logConfig;
-            ASSETS = config.assets;
-        }
-
+        console.info('[LMB Debugger] Config mode - Using logger-config.js settings');
+        executeDebugger(BRANCH, config.logConfig, config.assets);
+    }, function(errorMessage) {
+        console.error('[LMB Debugger] ERROR:', errorMessage);
+        console.error('[LMB Debugger] Script not executed. Check if logger-config.js exists on GitHub.');
+    });
+    
+    // Main execution function
+    function executeDebugger(branch, logConfig, assets) {
         // Niet meenemen: assets/cdn.jsdelivr.net/...
         var EXCLUDE_PREFIX = 'cdn.jsdelivr.net/';
 
         // INFO melding dat script actief is
-        console.info('[LMB Debugger] ACTIVE - Loading from commit:', BRANCH);
+        console.info('[LMB Debugger] ACTIVE - Loading from commit:', branch);
 
         // Stel versie en log configuratie in VOOR het laden van scripts
-        window.LMB_LOADER_VERSION = BRANCH;
-        window.LMB_LOG_CONFIG = LOG_CONFIG;
+        window.LMB_LOADER_VERSION = branch;
+        window.LMB_LOG_CONFIG = logConfig;
 
         var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
-        var ENCODED_BRANCH = encodeURIComponent(BRANCH);
+        var ENCODED_BRANCH = encodeURIComponent(branch);
 
         function injectAsset(relPath) {
             var url = BASE_URL + ENCODED_BRANCH + '/assets/' + relPath;
@@ -126,9 +132,9 @@
         }
 
         function inject() {
-            for (var relPath in ASSETS) {
+            for (var relPath in assets) {
                 if (
-                    ASSETS[relPath] &&
+                    assets[relPath] &&
                     relPath.indexOf(EXCLUDE_PREFIX) !== 0 // skip cdn.jsdelivr.net
                 ) {
                     injectAsset(relPath);
@@ -141,9 +147,6 @@
         } else {
             inject();
         }
-    }, function(errorMessage) {
-        console.error('[LMB Debugger] ERROR:', errorMessage);
-        console.error('[LMB Debugger] Script not executed. Check if logger-config.js exists on GitHub.');
-    });
+    }
 
 })();
