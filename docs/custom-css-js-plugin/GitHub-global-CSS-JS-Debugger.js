@@ -1,5 +1,5 @@
 /*
- * GitHub CSS & JS Testing / Verification Script
+ * La Maison Bossché - Global CSS & JS Debugger
  * Version: 1.2
  * Last Change: 2026-01-19
  * 
