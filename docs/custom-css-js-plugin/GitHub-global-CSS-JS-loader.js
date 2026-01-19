@@ -14,16 +14,19 @@
     // =============================
     // Update this value when creating a release (commit hash, version tag, or branch)
     // Examples: 'c3a986d', 'v1.0.0', 'main'
-    var RELEASE_VERSION = 'c3a986d';
+    var RELEASE_VERSION = 'main';
 
     // =============================
     // 🔧 LOADER LOGIC (niet aanpassen)
     // =============================
     
-    var BASE_URL = 'https://cdn.jsdelivr.net/gh/Qualis-IT-BV/lmb-assets@';
+    var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
     var url = BASE_URL + encodeURIComponent(RELEASE_VERSION) + '/assets/';
     
-    console.log('[LMB Global Loader] Loading from:', RELEASE_VERSION);
+    // Stel versie beschikbaar voor global.js
+    window.LMB_LOADER_VERSION = RELEASE_VERSION;
+    
+    console.log('[LMB Loader] Loading from:', RELEASE_VERSION);
     
     // Load global.css
     var link = document.createElement('link');
@@ -31,7 +34,7 @@
     link.href = url + 'css/global.css';
     link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
-    console.log('[LMB Global Loader] CSS loaded: global.css');
+    console.log('[LMB Loader] CSS loaded: global.css');
     
     // Load global.js
     var script = document.createElement('script');
@@ -39,6 +42,6 @@
     script.defer = true;
     script.crossOrigin = 'anonymous';
     (document.head || document.documentElement).appendChild(script);
-    console.log('[LMB Global Loader] JS loaded: global.js');
+    console.log('[LMB Loader] JS loaded: global.js');
 
 })();

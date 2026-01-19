@@ -23,7 +23,7 @@
     // 🎯 Override: Voer hier een commit-hash, branch of version in om logger-config.js te overschrijven
     // Voorbeelden: '8a3f2c1', 'feature/my-branch', 'main', 'v1.2.0'
     // Laat leeg (null) om logger-config.js waarde te gebruiken
-    var OVERRIDE_COMMIT = null;
+    var OVERRIDE_COMMIT = 'dev';
     
     if (!ENABLE_SCRIPT) return;
     
@@ -46,13 +46,10 @@
         var EXCLUDE_PREFIX = 'cdn.jsdelivr.net/';
 
         // INFO melding dat script actief is
-        console.info('%c' + new Date().toISOString() + ' %c[LMB Testing Script] %cACTIVE - Loading from commit: %c' + BRANCH, 
-            '',
-            'color: #FF9800; font-weight: bold', 
-            'color: #4CAF50; font-weight: bold',
-            'color: #2196F3; font-weight: bold');
+        console.info('[LMB Test] ACTIVE - Loading from commit:', BRANCH);
 
-        // Stel log configuratie in VOOR het laden van scripts
+        // Stel versie en log configuratie in VOOR het laden van scripts
+        window.LMB_LOADER_VERSION = BRANCH;
         window.LMB_LOG_CONFIG = LOG_CONFIG;
 
         var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';

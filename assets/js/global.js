@@ -6,19 +6,37 @@
  * Source: Custom development
  */
 
-// Omgeving detectie
+// Component loader
 (function(){
-	var host = window.location.hostname;
-	var branch;
-	if (host === 'test.lamaisonbossche.nl' || host.indexOf('dev.') === 0) {
-		branch = 'dev';
-	} else if (host === 'staging.lamaisonbossche.nl' || host.indexOf('staging.') === 0) {
-		branch = 'staging';
-	} else {
-		branch = 'main';
+	// Gebruik versie van parent loader (Global Loader of Testing Script)
+	var version = window.LMB_LOADER_VERSION;
+	
+	if (!version) {
+		console.warn(
+			'[LMB Components] WARNING: window.LMB_LOADER_VERSION is not set!\n\n' +
+			'global.js wordt bij voorkeur geladen via:\n' +
+			'1. GitHub-global-CSS-JS-loader.js (productie), OF\n' +
+			'2. GitHub-CSS-JS-Testing|Verification.js (testing)\n\n' +
+			'Terugvallen op hostname detection...'
+		);
+		
+		// Fallback: detecteer branch op basis van hostname
+		var host = window.location.hostname;
+		if (host === 'test.lamaisonbossche.nl') {
+			version = 'test';
+		} else if (host.indexOf('dev.') === 0) {
+			version = 'dev';
+		} else if (host === 'staging.lamaisonbossche.nl' || host.indexOf('staging.') === 0) {
+			version = 'staging';
+		} else {
+			version = 'main';  // Default voor onbekende hostnames
+		}
+		
+		console.warn('[LMB Components] Fallback actief - hostname detection gebruikt:', version);
 	}
 	
-	var baseUrl = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + branch + '/assets/';
+	var baseUrl = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + version + '/assets/';
+	console.log('[LMB Components] Loading components from:', version);
 	
 	// CSS Components laden
 	var cssComponents = [
