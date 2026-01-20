@@ -1,12 +1,13 @@
 /* Project: La Maison Bossché
  * Component: Global Scripts
- * Build: dev-20260119.001
+ * Build: dev-20260120.001
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Custom development
  */
 
 // Component loader
+// Note: CSS components are loaded via global.css (@import statements)
 (function(){
 	// Gebruik versie van parent loader (Global Loader of Testing Script)
 	var version = window.LMB_LOADER_VERSION;
@@ -15,8 +16,8 @@
 		console.warn(
 			'[LMB Components] WARNING: window.LMB_LOADER_VERSION is not set!\n\n' +
 			'global.js should preferably be loaded via:\n' +
-			'1. GitHub-global-CSS-JS-loader.js (production), OR\n' +
-			'2. GitHub-CSS-JS Debugger.js (testing)\n\n' +
+			'1. loader.js (production), OR\n' +
+			'2. debugger.js (testing)\n\n' +
 			'Falling back to hostname detection...'
 		);
 		
@@ -36,22 +37,10 @@
 	}
 	
 	var baseUrl = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + version + '/assets/';
-	console.log('[LMB Components] Loading components from:', version);
-	
-	// CSS Components laden
-	var cssComponents = [
-		'css/components/blocksy-extra.css'
-	];
-	
-	cssComponents.forEach(function(file) {
-		var link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.href = baseUrl + file;
-		link.crossOrigin = 'anonymous';
-		document.head.appendChild(link);
-	});
+	console.log('[LMB Components] Loading JS components from:', version);
 	
 	// JS Components laden
+	// Keep this list in sync with assets/js/components/**/*.js
 	var jsComponents = [
 		'js/components/Wishlist.js'
 	];

@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: GitHub CSS & JS Debugger
- * Build: dev-20260120.002
+ * Build: dev-20260120.004
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Refactored from GitHub-CSS-JS-Testing|Verification.js (v1.0) in lmb-assets Release 0.0.2
@@ -42,13 +42,14 @@
     
     // USE_GLOBAL mode: skip config loading, use hardcoded values
     if (USE_GLOBAL) {
-        console.info('[LMB Debugger] USE_GLOBAL mode - Loading global.js with loglevel:', GLOBAL_LOGLEVEL);
+        console.info('[LMB Debugger] USE_GLOBAL mode - Loading global.css + global.js with loglevel:', GLOBAL_LOGLEVEL);
         
         var LOG_CONFIG = {
             default: GLOBAL_LOGLEVEL
         };
         
         var ASSETS = {
+            'css/global.css': true,
             'js/global.js': true
         };
         
@@ -113,25 +114,60 @@
 
         var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
         var ENCODED_BRANCH = encodeURIComponent(branch);
+        
+        // Count assets for group label
+        var assetCount = 0;
+        for (var relPath in assets) {
+            if (assets[relPath] && relPath.indexOf(EXCLUDE_PREFIX) !== 0) {
+                assetCount++;
+            }
+        }
 
         function injectAsset(relPath) {
             var url = BASE_URL + ENCODED_BRANCH + '/assets/' + relPath;
+            var startTime = performance.now();
+            var type = relPath.endsWith('.css') ? 'CSS' : 'JS';
+            
+            console.log('[LMB Debugger] → ' + type + ': ' + relPath);
+            
             if (relPath.endsWith('.css')) {
                 var css = document.createElement('link');
                 css.rel = 'stylesheet';
                 css.href = url;
                 css.crossOrigin = 'anonymous';
+                
+                css.onload = function() {
+                    var loadTime = Math.round(performance.now() - startTime);
+                    console.log('[LMB Debugger] ✓ CSS loaded: ' + relPath + ' (' + loadTime + 'ms)');
+                };
+                
+                css.onerror = function() {
+                    console.error('[LMB Debugger] ✗ CSS failed: ' + relPath + ' - Check if file exists on GitHub');
+                };
+                
                 document.head.appendChild(css);
             } else if (relPath.endsWith('.js')) {
                 var s = document.createElement('script');
                 s.src = url;
                 s.defer = true;
                 s.crossOrigin = 'anonymous';
+                
+                s.onload = function() {
+                    var loadTime = Math.round(performance.now() - startTime);
+                    console.log('[LMB Debugger] ✓ JS loaded: ' + relPath + ' (' + loadTime + 'ms)');
+                };
+                
+                s.onerror = function() {
+                    console.error('[LMB Debugger] ✗ JS failed: ' + relPath + ' - Check if file exists on GitHub');
+                };
+                
                 (document.head || document.documentElement).appendChild(s);
             }
         }
 
         function inject() {
+            console.groupCollapsed('[LMB Debugger] Loading ' + assetCount + ' assets from: ' + branch);
+            
             for (var relPath in assets) {
                 if (
                     assets[relPath] &&
@@ -140,6 +176,8 @@
                     injectAsset(relPath);
                 }
             }
+            
+            console.groupEnd();
         }
 
         if (document.readyState === 'loading') {
