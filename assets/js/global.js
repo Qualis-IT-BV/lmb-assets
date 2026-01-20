@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: Global Scripts
- * Build: dev-20260120.002
+ * Build: dev-20260120.003
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Custom development

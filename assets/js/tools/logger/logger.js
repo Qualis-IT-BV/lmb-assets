@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: Logger Utility
- * Build: dev-20260119.001
+ * Build: dev-20260120.003
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Custom development
@@ -23,8 +23,12 @@
 
   // === Versie/commit info ophalen ===
   var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'dev');
-  if (typeof console !== 'undefined' && console.info) {
-    console.info('[LMB Logger] Component initialized (Build/Version):', loaderVersion);
+  var logger = { info: function(){} };
+  try {
+    logger = createLogger('Logger');
+  } catch(e) {}
+  if (logger && typeof logger.info === 'function') {
+    logger.info('Component initialized (Build/Version): ' + loaderVersion);
   }
 
   // Log levels (numeriek voor eenvoudige vergelijking)
@@ -164,7 +168,7 @@
 
   var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
   var selfLogger = createLogger('Logger');
-  selfLogger.info('Logger utility initialized (logger.js Build: dev-20260119.001, Loader: ' + loaderVersion + ')', {
+  selfLogger.info('Logger utility initialized (logger.js Build: dev-20260120.003, Loader: ' + loaderVersion + ')', {
     config: getConfig()
   });
 
