@@ -50,8 +50,17 @@
   // Verkrijg log level voor specifiek component
   function getLevelForComponent(component) {
     var config = getConfig();
-    var levelName = config[component] || config.default || 'INFO';
-    return LEVELS[levelName.toUpperCase()] || LEVELS.INFO;
+    // Maak componentnaam lowercase voor lookup
+    var key = component ? component.toLowerCase() : '';
+    // Maak alle config keys lowercase voor veilige lookup
+    var configLower = {};
+    for (var k in config) {
+      if (config.hasOwnProperty(k)) {
+        configLower[k.toLowerCase()] = config[k];
+      }
+    }
+    var levelName = configLower[key] || configLower['default'] || 'INFO';
+    return LEVELS[(levelName + '').toUpperCase()] || LEVELS.INFO;
   }
 
   // Timestamp formatter (ISO 8601 met milliseconden)
@@ -61,7 +70,7 @@
 
   // Logger factory
   function createLogger(componentName) {
-    componentName = componentName || 'Unknown';
+    componentName = (componentName || 'unknown').toLowerCase();
 
     function shouldLog(level) {
       var componentLevel = getLevelForComponent(componentName);
