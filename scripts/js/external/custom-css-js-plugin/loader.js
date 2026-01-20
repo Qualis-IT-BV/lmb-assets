@@ -18,11 +18,19 @@
     // =============================
     // Update this value when creating a release (commit hash, version tag, or branch)
     // Examples: 'c3a986d', 'v1.0.0', 'main'
-    var RELEASE_VERSION = 'main';
+    var RELEASE_VERSION = '3a540cf';
+    // =============================
 
+	
+	
+	
+	
+	
+	
     // =============================
     // 🔧 LOADER LOGIC (niet aanpassen)
     // =============================
+
     
     var BASE_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@';
     var url = BASE_URL + encodeURIComponent(RELEASE_VERSION) + '/assets/';
