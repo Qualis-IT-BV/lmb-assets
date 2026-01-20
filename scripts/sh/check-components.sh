@@ -1,14 +1,13 @@
 #!/bin/bash
 
 # Check Components Script
-# Validates that all CSS/JS components are registered in global.css and global.js
+# Validates that all CSS/JS components are registered in global.js
 
 set -e
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CSS_DIR="$REPO_ROOT/assets/css/components"
 JS_DIR="$REPO_ROOT/assets/js/components"
-GLOBAL_CSS="$REPO_ROOT/assets/css/global.css"
 GLOBAL_JS="$REPO_ROOT/assets/js/global.js"
 
 echo "🔍 Checking component registration..."
@@ -34,11 +33,11 @@ if [ -d "$JS_DIR" ]; then
     done < <(find "$JS_DIR" -name "*.js" -type f -print0 | sort -z)
 fi
 
-# Check CSS components
+# Check CSS components in global.js
 CSS_MISSING=()
-echo "📄 CSS Components:"
+echo "📄 CSS Components (loaded via global.js):"
 for css_file in "${CSS_FILES[@]}"; do
-    if grep -q "$css_file" "$GLOBAL_CSS"; then
+    if grep -q "$css_file" "$GLOBAL_JS"; then
         echo "  ✓ $css_file"
     else
         echo "  ✗ $css_file (NOT REGISTERED)"
@@ -69,15 +68,15 @@ else
     echo ""
     
     if [ ${#CSS_MISSING[@]} -gt 0 ]; then
-        echo "Missing in global.css:"
+        echo "Missing in global.js cssComponents array:"
         for css_file in "${CSS_MISSING[@]}"; do
-            echo "  @import url('$css_file');"
+            echo "  '$css_file'"
         done
         echo ""
     fi
     
     if [ ${#JS_MISSING[@]} -gt 0 ]; then
-        echo "Missing in global.js:"
+        echo "Missing in global.js jsComponents array:"
         for js_file in "${JS_MISSING[@]}"; do
             echo "  '$js_file'"
         done

@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: GitHub CSS & JS Debugger
- * Build: dev-20260120.004
+ * Build: dev-20260120.005
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Refactored from GitHub-CSS-JS-Testing|Verification.js (v1.0) in lmb-assets Release 0.0.2
@@ -42,14 +42,13 @@
     
     // USE_GLOBAL mode: skip config loading, use hardcoded values
     if (USE_GLOBAL) {
-        console.info('[LMB Debugger] USE_GLOBAL mode - Loading global.css + global.js with loglevel:', GLOBAL_LOGLEVEL);
+        console.info('[LMB Debugger] USE_GLOBAL mode - Loading global.js with loglevel:', GLOBAL_LOGLEVEL);
         
         var LOG_CONFIG = {
             default: GLOBAL_LOGLEVEL
         };
         
         var ASSETS = {
-            'css/global.css': true,
             'js/global.js': true
         };
         

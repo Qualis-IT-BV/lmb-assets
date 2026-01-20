@@ -65,7 +65,7 @@ Vervang in gewijzigde bestanden:
 
 ### 5. Update Global Loader
 
-Update `assets/js/external/custom-css-js-plugin/loader.js`:
+Update `scripts/js/external/custom-css-js-plugin/loader.js`:
 
 ```javascript
 var CONFIG = {

@@ -67,12 +67,12 @@ Dit bestand wordt geladen door de WordPress Custom CSS & JS plugin en overschrij
    - Gebruik console.log voor debugging
 
 2. **Wanneer klaar:**
-   - Kopieer volledige inhoud naar: `assets/js/external/custom-css-js-plugin/debugger.js`
+   - Kopieer volledige inhoud naar: `scripts/js/external/custom-css-js-plugin/debugger.js`
    - Update build nummer in header
    - Commit naar repo
 
 3. **Deploy naar WordPress:**
-   - Kopieer inhoud uit `assets/js/external/custom-css-js-plugin/debugger.js`
+   - Kopieer inhoud uit `scripts/js/external/custom-css-js-plugin/debugger.js`
    - Plak in WordPress Custom CSS & JS plugin (Footer code)
 
 **Belangrijk:**

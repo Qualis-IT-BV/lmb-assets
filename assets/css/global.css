@@ -1,17 +1,14 @@
 /* Project: La Maison Bossché
  * Component: Global CSS
- * Build: dev-20260120.001
+ * Build: dev-20260120.002
  * First Release: lmb-assets 0.0.1
  * Last Change: -
  * Source: Custom development
  */
 
 /* ====================================
- * Component CSS Imports
+ * NOTICE: This file is currently NOT USED
  * 
- * All CSS components are loaded via @import.
- * Keep this list in sync with assets/css/components/**/*.css
+ * CSS components are loaded via global.js (JavaScript)
+ * This file is kept for potential future use.
  * ==================================== */
-
-/* Blocksy Theme CSS Migration */
-@import url('components/blocksy-extra.css');
