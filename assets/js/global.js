@@ -29,7 +29,10 @@
 		// Fallback: detecteer branch op basis van hostname
 		var host = window.location.hostname;
 		if (host === 'test.lamaisonbossche.nl') {
-			version = 'test';
+			version = 'test'; 
+			if (logger) {
+				logger.info('Loading components from: ' + version);
+			}
 		} else if (host.indexOf('dev.') === 0) {
 			version = 'dev';
 		} else if (host === 'staging.lamaisonbossche.nl' || host.indexOf('staging.') === 0) {
@@ -38,7 +41,11 @@
 			version = 'main';  // Default for unknown hostnames
 		}
 		
-		console.warn('[LMB Components] Fallback active - using hostname detection:', version);
+		if (logger) {
+			logger.warn('Fallback active - using hostname detection: ' + version);
+		} else {
+			console.warn('[LMB Components] Fallback active - using hostname detection:', version);
+		}
 	}
 	
 	var baseUrl = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + version + '/assets/';

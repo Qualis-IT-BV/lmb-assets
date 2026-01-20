@@ -88,21 +88,44 @@
     function log(level, levelName, args) {
       if (!shouldLog(level)) return;
 
+      // Uniforme logstring: ISO-timestamp LEVEL LMB component actie - data
       var prefix = timestamp();
-      var color = LEVEL_COLORS[levelName];
-      var allArgs = [
-        '%c' + prefix + ' %c' + levelName + ' %cLMB ' + componentName,
-        '', // standaard kleur voor tijd
-        'color: ' + color + '; font-weight: bold', // kleur voor level
-        'color: #909090; font-weight: normal' // lichtere kleur voor component (beter leesbaar op donkere achtergrond)
-      ].concat(Array.prototype.slice.call(args));
-
-      // Gebruik juiste console methode
-      var method = levelName === 'DEBUG' ? 'log' :
-                   levelName === 'WARN' ? 'warn' :
-                   levelName === 'ERROR' ? 'error' : 'log';
-
-      console[method].apply(console, allArgs);
+      var msg = '';
+      if (args.length > 0 && typeof args[0] === 'string') {
+        msg = args[0];
+        if (args.length > 1) {
+          // Voeg extra data toe als string
+          msg += ' - ' + Array.prototype.slice.call(args, 1).map(function(a){
+            if (typeof a === 'object') {
+              try { return JSON.stringify(a); } catch(e) { return '[object]'; }
+            }
+            return String(a);
+          }).join(' ');
+        }
+      } else {
+        msg = Array.prototype.slice.call(args).map(function(a){
+          if (typeof a === 'object') {
+            try { return JSON.stringify(a); } catch(e) { return '[object]'; }
+          }
+          return String(a);
+        }).join(' ');
+      }
+        // Kleur voor loglevel
+        var color = LEVEL_COLORS[levelName] || '#333';
+        var logFormat = '%s %c%s%c LMB %s %s';
+        // timestamp, kleur voor level, level, reset kleur, component, message
+        var method = levelName === 'DEBUG' ? 'log' :
+                     levelName === 'WARN' ? 'warn' :
+                     levelName === 'ERROR' ? 'error' : 'log';
+        console[method](
+          logFormat,
+          prefix,
+          'color:' + color + ';font-weight:bold;',
+          levelName,
+          '', // reset kleur
+          componentName,
+          msg
+        );
     }
 
     return {
