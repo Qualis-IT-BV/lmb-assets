@@ -15,8 +15,8 @@ var BUILD = 'dev-20260120.004';
 (function () {
   // === Versie/commit info ophalen ===
   var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'main');
-  if (typeof console !== 'undefined' && console.info) {
-    console.info('[LMB Wishlist] Component initialized (Build/Version):', loaderVersion);
+  if (logger) {
+    logger.info('Component initialized (Build/Version): ' + loaderVersion);
   }
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
 
@@ -127,8 +127,8 @@ var BUILD = 'dev-20260120.004';
 // =============================
 (function () {
   var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'unknown');
-  if (typeof console !== 'undefined' && console.info) {
-    console.info('[LMB Wishlist] Popup Timing initialized (Build/Version):', loaderVersion);
+  if (logger) {
+    logger.info('Popup Timing initialized (Build/Version): ' + loaderVersion);
   }
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
@@ -227,8 +227,8 @@ var BUILD = 'dev-20260120.004';
 // =============================
 (function () {
   var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'unknown');
-  if (typeof console !== 'undefined' && console.info) {
-    console.info('[LMB Wishlist] Image Overlay Scripts initialized (Build/Version):', loaderVersion);
+  if (logger) {
+    logger.info('Image Overlay Scripts initialized (Build/Version): ' + loaderVersion);
   }
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
