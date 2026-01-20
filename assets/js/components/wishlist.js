@@ -11,8 +11,13 @@
 var BUILD = 'dev-20260120.004';
 
 // =============================
+
 (function () {
-  var loaderVersion = window.LMB_LOADER_VERSION || 'main';
+  // === Versie/commit info ophalen ===
+  var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'main');
+  if (typeof console !== 'undefined' && console.info) {
+    console.info('[LMB Wishlist] Component initialized (Build/Version):', loaderVersion);
+  }
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
 
   // Debug: fetch logging alleen als expliciet aan
@@ -121,7 +126,10 @@ var BUILD = 'dev-20260120.004';
 // La Maison Bossché – Wishlist Popup Timing
 // =============================
 (function () {
-  var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
+  var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'unknown');
+  if (typeof console !== 'undefined' && console.info) {
+    console.info('[LMB Wishlist] Popup Timing initialized (Build/Version):', loaderVersion);
+  }
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -218,7 +226,10 @@ var BUILD = 'dev-20260120.004';
 // La Maison Bossché – Wishlist Image Overlay Scripts
 // =============================
 (function () {
-  var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
+  var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'unknown');
+  if (typeof console !== 'undefined' && console.info) {
+    console.info('[LMB Wishlist] Image Overlay Scripts initialized (Build/Version):', loaderVersion);
+  }
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {

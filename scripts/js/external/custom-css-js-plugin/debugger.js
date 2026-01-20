@@ -15,6 +15,19 @@
  * 3. DISABLE this script when merging to dev/staging/main branches
  * 
  * Note: Excludes cdn.jsdelivr.net/ overrides (managed via Chrome DevTools)
+ *
+ * Loglevel filtering:
+ *
+ * | Set loglevel | Shows:                  |
+ * |--------------|-------------------------|
+ * | DEBUG        | DEBUG, INFO, WARN, ERROR|
+ * | INFO         | INFO, WARN, ERROR       |
+ * | WARN         | WARN, ERROR             |
+ * | ERROR        | ERROR                   |
+ * | SILENT       | nothing                 |
+ *
+ * Each higher loglevel filters out lower levels.
+ *
  */
 
 (function () {

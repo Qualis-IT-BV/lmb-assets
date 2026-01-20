@@ -7,6 +7,8 @@
  */
 
 (function() {
+  var loaderVersion = window.LMB_LOADER_VERSION || 'dev';
+  console.info('[Wishlist-debug] Loader Version:', loaderVersion);
   // Zorg dat logger beschikbaar is
   var logger = window.LMB ? window.LMB.createLogger('WishlistDebug') : { info:console.log, error:console.error, warn:console.warn };
   function log(level, message, data) {

@@ -18,7 +18,7 @@
     // =============================
     // Update this value when creating a release (commit hash, version tag, or branch)
     // Examples: 'c3a986d', 'v1.0.0', 'main'
-    var RELEASE_VERSION = '3a540cf';
+    var RELEASE_VERSION = 'main';
     // =============================
 
 	
