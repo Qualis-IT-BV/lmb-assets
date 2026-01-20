@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: Wishlist
- * Build: dev-20260120.004
+ * Build: dev-20260120.005
  * First Release: lmb-assets 0.0.1
  * Last Change: -
  * Source: Custom CSS & JS plugin migratie (alfa release v.0.0.1)
@@ -8,7 +8,7 @@
 
 // =============================
 // La Maison Bossché – Wishlist Click Behavior
-var BUILD = 'dev-20260120.004';
+var BUILD = 'dev-20260120.005';
 
 // =============================
 
