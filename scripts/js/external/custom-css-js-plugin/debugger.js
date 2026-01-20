@@ -30,7 +30,7 @@
     // 🔀 USE GLOBAL MODE
     // true: Laad alleen global.js (inclusief alle componenten) met algemeen loglevel
     // false: Gebruik specifieke assets en loglevels uit logger-config.js
-    var USE_GLOBAL = false;
+    var USE_GLOBAL = true;
     
     // 📊 Loglevel voor USE_GLOBAL mode
     // Levels: DEBUG, INFO, WARN, ERROR, SILENT

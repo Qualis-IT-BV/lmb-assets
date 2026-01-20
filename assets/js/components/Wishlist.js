@@ -1,6 +1,6 @@
 /* Project: La Maison Bossché
  * Component: Wishlist
- * Build: dev-20260119.001
+ * Build: dev-20260120.004
  * First Release: lmb-assets unreleased
  * Last Change: -
  * Source: Custom CSS & JS plugin migratie (alfa release v.0.0.1)
@@ -10,8 +10,8 @@
 // La Maison Bossché – Wishlist Click Behavior
 // =============================
 (function () {
-  var VERSION = null; // Set to 'X.Y.Z' for releases
-  var BUILD = 'dev-20260119.001';
+  var BUILD = 'dev-20260120.004';
+  var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   
   // Alleen loggen als logger beschikbaar is
@@ -21,15 +21,7 @@
     }
   }
   
-  var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
-  log('info', 'Click Behavior initialized (wishlist.js ' + versionInfo + ')');
-  
-  // Monitor AJAX calls
-  var originalFetch = window.fetch;
-  window.fetch = function() {
-    log('debug', 'AJAX fetch:', arguments[0]);
-    return originalFetch.apply(this, arguments);
-  };
+  log('info', 'Click Behavior initialized (Build: ' + BUILD + ', Loader: ' + loaderVersion + ')');
   
   // Monitor new DOM elements
   if (window.MutationObserver) {
@@ -117,8 +109,8 @@
 // La Maison Bossché – Wishlist Popup Timing
 // =============================
 (function () {
-  var VERSION = null; // Set to 'X.Y.Z' for releases
-  var BUILD = 'dev-20260119.001';
+  var BUILD = 'dev-20260120.004';
+  var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -126,8 +118,7 @@
     }
   }
   
-  var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
-  log('info', 'Popup Timing initialized (wishlist.js ' + versionInfo + ')');
+  log('info', 'Popup Timing initialized (Build: ' + BUILD + ', Loader: ' + loaderVersion + ')');
   var LMB_POPUP_MS = 4000;
   var LMB_CLOSE_TIMER = null;
   function getModal() {
@@ -216,8 +207,8 @@
 // La Maison Bossché – Wishlist Image Overlay Scripts
 // =============================
 (function () {
-  var VERSION = null; // Set to 'X.Y.Z' for releases
-  var BUILD = 'dev-20260119.001';
+  var BUILD = 'dev-20260120.004';
+  var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
   function log(level, message, data) {
     if (logger) {
@@ -225,8 +216,7 @@
     }
   }
   
-  var versionInfo = VERSION ? 'Version: ' + VERSION + ', Build: ' + BUILD : 'Build: ' + BUILD;
-  log('info', 'Image Overlay Scripts initialized (wishlist.js ' + versionInfo + ')');
+  log('info', 'Image Overlay Scripts initialized (Build: ' + BUILD + ', Loader: ' + loaderVersion + ')');
   var WISHLIST_URL = '/wishlist/';
   function normalizeContent(val) {
     if (!val || val === 'none' || val === '""' || val === '\'\'') return '';
