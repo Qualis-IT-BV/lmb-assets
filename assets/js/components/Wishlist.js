@@ -13,6 +13,16 @@
   var BUILD = 'dev-20260120.004';
   var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
   var logger = window.LMB ? window.LMB.createLogger('Wishlist') : null;
+    // Debug: fetch logging alleen als expliciet aan
+    var DEBUG_FETCH_LOGGING = window.LMB_DEBUG_FETCH === true;
+    if (DEBUG_FETCH_LOGGING && typeof window.fetch === 'function') {
+      var originalFetch = window.fetch;
+      window.fetch = function() {
+        log('debug', 'AJAX fetch:', arguments[0]);
+        return originalFetch.apply(this, arguments);
+      };
+      log('info', 'window.fetch debug-logger actief');
+    }
   
   // Alleen loggen als logger beschikbaar is
   function log(level, message, data) {
@@ -324,7 +334,12 @@
     setTimeout(moveWishlistButtons, 300);
     setTimeout(moveWishlistButtons, 900);
     setTimeout(moveWishlistButtons, 2000);
-    setTimeout(syncWishlistState, 800);
+    // Voorkom fetch-loop op wishlist pagina
+    if (window.location.pathname !== '/wishlist/' && window.location.pathname !== '/wishlist') {
+      setTimeout(syncWishlistState, 800);
+    } else {
+      log('info', 'syncWishlistState() niet uitgevoerd op wishlist pagina');
+    }
     setTimeout(startIconRetries, 300);
   });
   
@@ -335,7 +350,12 @@
     setTimeout(moveWishlistButtons, 300);
     setTimeout(moveWishlistButtons, 900);
     setTimeout(moveWishlistButtons, 2000);
-    setTimeout(syncWishlistState, 800);
+    // Voorkom fetch-loop op wishlist pagina
+    if (window.location.pathname !== '/wishlist/' && window.location.pathname !== '/wishlist') {
+      setTimeout(syncWishlistState, 800);
+    } else {
+      log('info', 'syncWishlistState() niet uitgevoerd op wishlist pagina');
+    }
     setTimeout(startIconRetries, 300);
   }
   

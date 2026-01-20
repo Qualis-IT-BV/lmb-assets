@@ -28,19 +28,24 @@ window.LMB_TEST_CONFIG = {
     //    → Deze moeten via Chrome DevTools Local Overrides worden getest
     //
     assets: {
-        // === Core (altijd eerst) ===
-        'js/tools/logger/logger.js': true,              // Logger utility (VERPLICHT, altijd eerst!)
+      // === Core (altijd eerst) ===
+      'js/tools/logger/logger.js': true,              // Logger utility (VERPLICHT, altijd eerst!)
+
+      // === Tools & Debug (optioneel) ===
+      'js/tools/Wishlist-debug.js': true,             // Debug/testfuncties voor Wishlist (alleen aanzetten bij debuggen)
         
-        // === Global loaders (LET OP: laadt componenten automatisch!) ===
-        'js/global.js': false,                          // ⚠️ Laadt automatisch: Wishlist.js, blocksy-extra.css
-        'css/global.css': false,                        // Global CSS styling
+      // === Global loaders (LET OP: laadt componenten automatisch!) ===
+      'js/global.js': false,                          // ⚠️ Laadt automatisch: Wishlist.js, blocksy-extra.css
+      'css/global.css': false,                        // Global CSS styling: Wordt niet gebruikt
         
-        // === Individual Components (UIT als global.js AAN is!) ===
-        'js/components/Wishlist.js': true,              // Wishlist functionaliteit
-        'css/components/blocksy-extra.css': true,       // Blocksy CSS migratie
+      // === Individual Components (UIT als global.js AAN is!) ===
+      'js/components/Wishlist.js': true,              // Wishlist functionaliteit
+      'css/components/blocksy-extra.css': true,       // Blocksy CSS migratie
         
-        // === External/CDN scripts (niet via debugger) ===
-        // 'cdn.jsdelivr.net/...' → Gebruik Chrome DevTools Local Overrides
-        // 'css/cdn.jsdelivr.net/longurls/Wishlist-copy.js': false  // Externe wishlist variant
+      // === External/CDN scripts (niet via debugger) ===
+      // 'cdn.jsdelivr.net/...' → Gebruik Chrome DevTools Local Overrides
+      // 'css/cdn.jsdelivr.net/longurls/Wishlist-copy.js': false  // Externe wishlist variant
     }
 };
+
+
