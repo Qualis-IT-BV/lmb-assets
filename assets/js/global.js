@@ -11,28 +11,21 @@
 (function(){
 	// === Versie/commit info ophalen ===
 	var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'dev');
-	if (typeof console !== 'undefined' && console.info) {
-		console.info('[LMB Components] Component initialized (Build/Version):', loaderVersion);
+	var logger = window.LMB ? window.LMB.createLogger('Components') : null;
+	if (logger) {
+		logger.info('Component initialized (Build/Version): ' + loaderVersion);
 	}
 	// Gebruik versie van parent loader (Global Loader of Testing Script)
 	var version = window.LMB_LOADER_VERSION;
 	
 	if (!version) {
-		console.warn(
-			'[LMB Components] WARNING: window.LMB_LOADER_VERSION is not set!\n\n' +
-			'global.js should preferably be loaded via:\n' +
-			'1. loader.js (production), OR\n' +
-			'2. debugger.js (testing)\n\n' +
-			'Falling back to hostname detection...'
-		);
-		
+		if (logger) {
+			logger.warn('WARNING: window.LMB_LOADER_VERSION is not set! global.js should preferably be loaded via loader.js (production) of debugger.js (testing). Falling back to hostname detection...');
+		}
 		// Fallback: detecteer branch op basis van hostname
 		var host = window.location.hostname;
 		if (host === 'test.lamaisonbossche.nl') {
-			version = 'test'; 
-			if (logger) {
-				logger.info('Loading components from: ' + version);
-			}
+			version = 'test';
 		} else if (host.indexOf('dev.') === 0) {
 			version = 'dev';
 		} else if (host === 'staging.lamaisonbossche.nl' || host.indexOf('staging.') === 0) {
@@ -40,16 +33,15 @@
 		} else {
 			version = 'main';  // Default for unknown hostnames
 		}
-		
 		if (logger) {
 			logger.warn('Fallback active - using hostname detection: ' + version);
-		} else {
-			console.warn('[LMB Components] Fallback active - using hostname detection:', version);
 		}
 	}
 	
 	var baseUrl = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + version + '/assets/';
-	console.log('[LMB Components] Loading components from:', version);
+	if (logger) {
+		logger.info('Loading components from: ' + version);
+	}
 	
 	// CSS Components laden
 	// Keep this list in sync with assets/css/components/**/*.css
