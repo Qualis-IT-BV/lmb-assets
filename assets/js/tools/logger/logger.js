@@ -121,8 +121,10 @@
   window.LMB.LEVELS = LEVELS;
 
   // Logger voor de logger zelf
+
+  var loaderVersion = window.LMB_LOADER_VERSION || 'unknown';
   var selfLogger = createLogger('Logger');
-  selfLogger.info('Logger utility initialized (logger.js Build: dev-20260119.001)', {
+  selfLogger.info('Logger utility initialized (logger.js Build: dev-20260119.001, Loader: ' + loaderVersion + ')', {
     config: getConfig()
   });
 

@@ -33,7 +33,7 @@
     var USE_GLOBAL = true;
     
     // 📊 Loglevel voor USE_GLOBAL mode
-    // Levels: DEBUG, INFO, WARN, ERROR, SILENT
+    // Levels: SILENT, INFO, WARN, ERROR, DEBUG
     var GLOBAL_LOGLEVEL = 'INFO';
     
     if (!ENABLE_SCRIPT) return;
@@ -47,16 +47,18 @@
         var LOG_CONFIG = {
             default: GLOBAL_LOGLEVEL
         };
-        
+
+        // Logger.js moet altijd als eerste geladen worden!
         var ASSETS = {
+            'js/tools/logger/logger.js': true,
             'js/global.js': true
         };
-        
+
         executeDebugger(BRANCH, LOG_CONFIG, ASSETS);
         return;
     }
     
-    // Config mode: laad logger-config.js vanaf GitHub
+    // Config mode: laad logger-config.js
     function loadConfig(callback, errorCallback) {
         var CONFIG_URL = 'https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@' + 
                          encodeURIComponent(OVERRIDE_COMMIT || 'dev') + 
