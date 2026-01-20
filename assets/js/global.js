@@ -9,6 +9,11 @@
 // Component loader
 // Loads all CSS and JS components
 (function(){
+	// === Versie/commit info ophalen ===
+	var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'dev');
+	if (typeof console !== 'undefined' && console.info) {
+		console.info('[LMB Components] Component initialized (Build/Version):', loaderVersion);
+	}
 	// Gebruik versie van parent loader (Global Loader of Testing Script)
 	var version = window.LMB_LOADER_VERSION;
 	
@@ -56,7 +61,7 @@
 	// JS Components laden
 	// Keep this list in sync with assets/js/components/**/*.js
 	var jsComponents = [
-		'js/components/Wishlist.js'
+		'js/components/wishlist.js'
 	];
 	
 	jsComponents.forEach(function(file) {

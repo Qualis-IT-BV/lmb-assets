@@ -17,8 +17,15 @@
  * logger.error('Error!');
  */
 
+
 (function () {
   'use strict';
+
+  // === Versie/commit info ophalen ===
+  var loaderVersion = (window.LMB_LOADER_VERSION || (window.LMB_TEST_CONFIG && window.LMB_TEST_CONFIG.version) || 'dev');
+  if (typeof console !== 'undefined' && console.info) {
+    console.info('[LMB Logger] Component initialized (Build/Version):', loaderVersion);
+  }
 
   // Log levels (numeriek voor eenvoudige vergelijking)
   var LEVELS = {
@@ -60,7 +67,8 @@
       }
     }
     var levelName = configLower[key] || configLower['default'] || 'INFO';
-    return LEVELS[(levelName + '').toUpperCase()] || LEVELS.INFO;
+    var numericLevel = LEVELS[(levelName + '').toUpperCase()];
+    return (typeof numericLevel === 'number') ? numericLevel : LEVELS.INFO;
   }
 
   // Timestamp formatter (ISO 8601 met milliseconden)
@@ -86,7 +94,7 @@
         '%c' + prefix + ' %c' + levelName + ' %cLMB ' + componentName,
         '', // standaard kleur voor tijd
         'color: ' + color + '; font-weight: bold', // kleur voor level
-        'color: #666; font-weight: normal' // grijze kleur voor component
+        'color: #909090; font-weight: normal' // lichtere kleur voor component (beter leesbaar op donkere achtergrond)
       ].concat(Array.prototype.slice.call(args));
 
       // Gebruik juiste console methode

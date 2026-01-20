@@ -1,4 +1,5 @@
 /*
+ * Loader Version: " + (window.LMB_LOADER_VERSION || 'dev') + "
  * Logger Configuration
  * Last Updated: 2026-01-20T00:00:00
  * 
@@ -8,7 +9,11 @@
  * Note: Commit/branch wordt ingesteld in het Debugger script zelf (OVERRIDE_COMMIT)
  */
 
+var loaderVersion = window.LMB_LOADER_VERSION || 'dev';
+console.info('[LMB Logger Config] Loader Version:', loaderVersion);
 window.LMB_TEST_CONFIG = {
+  // Versie/commit hash van de geladen config (meegenomen uit debugger.js)
+  version: loaderVersion,
     // 📊 Logging configuratie (per component + globaal)
     // Levels: DEBUG, INFO, WARN, ERROR, SILENT
     logConfig: {
