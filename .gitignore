@@ -1,7 +1,29 @@
-# macOS
-**/.DS_Store
+# ===============================
+# OS / System
+# ===============================
+.DS_Store
 
-# Chrome DevTools (Workspace / Overrides)
+# ===============================
+# VS Code / Editor
+# ===============================
+*.code-workspace
+.vscode/
+
+# ===============================
+# Chrome DevTools (Overrides / Workspaces)
+# ===============================
 overrides/
-cdn.jsdelivr.net/
 .devtools*
+cdn.jsdelivr.net/
+
+# ===============================
+# Logs / Temp
+# ===============================
+logs/
+*.log
+
+# ===============================
+# Environment / Secrets
+# ===============================
+.env
+.env.*
