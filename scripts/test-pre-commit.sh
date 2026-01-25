@@ -17,6 +17,9 @@ echo "[LMB pre-commit] Header + buildcontrole (branch: $BRANCH)"
 
 # Repo/projectnaam (kan je overriden met LMB_PROJECT_NAME)
 TOPLEVEL="$(git rev-parse --show-toplevel)"
+
+
+oplevel)"
 REPO_NAME="$(basename "$TOPLEVEL")"
 PROJECT_NAME="${LMB_PROJECT_NAME:-$REPO_NAME}"
 
@@ -29,8 +32,8 @@ DEFAULT_FIRST_RELEASE="${LMB_FIRST_RELEASE:-$(date +%Y-%m-%d)}"
 # Welke bestanden wil je afdwingen?
 # (pas aan naar jouw repo; hieronder behoud ik je eerdere lijst)
 FILES=(
-  "testassets/js/global.js"
-  "testassets/js/components/Wishlist.js"
+  "assets/js/global.js"
+  "assets/js/components/Wishlist.js"
 )
 
 changed_any=0
