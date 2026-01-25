@@ -1,11 +1,13 @@
 /* Project: q-githooks
  * Component: global.js
- * Build: dev-20260125.000
+ * Build: dev-20260125.005
  * First Release: 2026-01-19
  * Last Change: -
  * Source: New
  * 
- * Purpose:
+ * Project: q-githooks
+ * 
+ * Purpose: testing
  * 
  */
 
