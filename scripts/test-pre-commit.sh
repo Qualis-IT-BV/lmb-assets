@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# LMB pre-commit hook
+# Q-GitHooks:  pre-commit hook
 # Build: hooks-20260125.002
 # Doel: Header afdwingen/normaliseren + Build-datum check (alleen feature/* en hotfix/*)
 
@@ -13,21 +13,18 @@ if ! [[ "$BRANCH" =~ ^feature/ || "$BRANCH" =~ ^hotfix/ ]]; then
   exit 0
 fi
 
-echo "[LMB pre-commit] Header + buildcontrole (branch: $BRANCH)"
+echo "[Q-GitHooks pre-commit] Header + buildcontrole (branch: $BRANCH)"
 
-# Repo/projectnaam (kan je overriden met LMB_PROJECT_NAME)
+# Repo/projectnaam (kan je overriden met THIS_PROJECT_NAME)
 TOPLEVEL="$(git rev-parse --show-toplevel)"
-
-
-oplevel)"
 REPO_NAME="$(basename "$TOPLEVEL")"
-PROJECT_NAME="${LMB_PROJECT_NAME:-$REPO_NAME}"
+PROJECT_NAME="${THIS_PROJECT_NAME:-$REPO_NAME}"
 
 # Build-standaard (prefix) - default dev
-BUILD_PREFIX="${LMB_BUILD_PREFIX:-dev}"
+BUILD_PREFIX="${THIS_BUILD_PREFIX:-dev}"
 
 TODAY="$(date +%Y%m%d)"
-DEFAULT_FIRST_RELEASE="${LMB_FIRST_RELEASE:-$(date +%Y-%m-%d)}"
+DEFAULT_FIRST_RELEASE="${THIS_FIRST_RELEASE:-$(date +%Y-%m-%d)}"
 
 # Welke bestanden wil je afdwingen?
 # (pas aan naar jouw repo; hieronder behoud ik je eerdere lijst)
@@ -211,7 +208,7 @@ for f in "${FILES[@]}"; do
   fi
 
   if [[ ! -f "$f" ]]; then
-    echo "[LMB pre-commit] Waarschuwing: bestand niet gevonden: $f"
+    echo "[Q-GitHooks pre-commit] Waarschuwing: bestand niet gevonden: $f"
     continue
   fi
 
@@ -227,7 +224,7 @@ for f in "${FILES[@]}"; do
 done
 
 if [[ "$changed_any" -eq 1 ]]; then
-  echo "[LMB pre-commit] Headers/build bijgewerkt en opnieuw gestaged:"
+  echo "[Q-GitHooks pre-commit] Headers/build bijgewerkt en opnieuw gestaged:"
   printf ' - %s\n' "${changed_files[@]}"
 fi
 
