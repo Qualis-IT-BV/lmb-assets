@@ -41,7 +41,7 @@ ensure_header_and_build() {
   local component="$2"
   local default_first_release="$3"
 
-  local target_build="${BUILD_PREFIX}-${TODAY}.000"
+
 
   # 1) Bepaal huidige Build uit header (alleen in de eerste ~80 regels zoeken)
   local build_line=""
@@ -52,20 +52,72 @@ ensure_header_and_build() {
     current_build="$(printf '%s' "$build_line" | sed -E 's/^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*//')"
   fi
 
+  local target_build=""
+  local needs_build_update=0
   # 2) Valideer buildformat + check datum
   #    Verwacht: <prefix>-YYYYMMDD.NNN
-  #    - Als invalid of verkeerde dag: zet naar prefix-TODAY.000
-  local needs_build_update=0
+  #    - Als invalid of verkeerde dag: zet naar prefix-TODAY.001
   if [[ -z "$current_build" ]]; then
     needs_build_update=1
+    target_build="${BUILD_PREFIX}-${TODAY}.001"
   else
     if [[ "$current_build" =~ ^${BUILD_PREFIX}-([0-9]{8})\.([0-9]{3})$ ]]; then
-      local build_date="${BASH_REMATCH[1]}"
+      local build_date
+      if [[ -n "${BASH_REMATCH[1]:-}" ]]; then
+        build_date="${BASH_REMATCH[1]}"
+      else
+        build_date=""
+      fi
       if [[ "$build_date" != "$TODAY" ]]; then
+        needs_build_update=1
+        target_build="${BUILD_PREFIX}-${TODAY}.001"
+      else
+        # Datum klopt, zoek hoogste buildnummer voor vandaag en verhoog met 1
+        local max_build=0
+        local build_regex="^${BUILD_PREFIX}-${TODAY}\\.([0-9]{3})$"
+        local build_lines
+        build_lines=$(head -n 80 "$file" | grep -E '^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*' || true)
+        while IFS= read -r line; do
+          local build_value=""
+          build_value=$(printf '%s' "$line" | sed -E 's/^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*//')
+          if [[ "$build_value" =~ $build_regex ]]; then
+            local build_num
+            if [[ -n "${BASH_REMATCH[1]:-}" ]]; then
+              build_num="${BASH_REMATCH[1]}"
+            else
+              build_num=""
+            fi
+            if [[ "$build_num" =~ ^[0-9]{3}$ && $((10#$build_num)) -gt $max_build ]]; then
+              max_build=$((10#$build_num))
+            fi
+          fi
+        done <<< "$build_lines"
+
+        # Ook staged versie controleren (voor hooks in commit-pipeline)
+        local staged_build_line=""
+        staged_build_line="$(git show :$file 2>/dev/null | head -n 80 | grep -m1 -E '^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*' || true)"
+        if [[ -n "$staged_build_line" ]]; then
+          if [[ "$staged_build_line" =~ $build_regex ]]; then
+            local staged_build_num
+            if [[ -n "${BASH_REMATCH[1]:-}" ]]; then
+              staged_build_num="${BASH_REMATCH[1]}"
+            else
+              staged_build_num=""
+            fi
+            if [[ "$staged_build_num" =~ ^[0-9]{3}$ && $((10#$staged_build_num)) -gt $max_build ]]; then
+              max_build=$((10#$staged_build_num))
+            fi
+          fi
+        fi
+
+        local next_build_num
+        next_build_num=$(printf "%03d" $((max_build + 1)))
+        target_build="${BUILD_PREFIX}-${TODAY}.${next_build_num}"
         needs_build_update=1
       fi
     else
       needs_build_update=1
+      target_build="${BUILD_PREFIX}-${TODAY}.001"
     fi
   fi
 
@@ -119,82 +171,60 @@ EOF
     return 0
   fi
 
-  # 4) Bestaand headerblock: normaliseer keys in eerste /* ... */ blok
-  awk -v project="$PROJECT_NAME" \
+  # 4) Bestaand headerblock: herschrijf altijd in vaste volgorde en zet header altijd bovenaan
+    awk -v project="$PROJECT_NAME" \
       -v component="$component" \
       -v target_build="$target_build" \
       -v default_first_release="$default_first_release" \
       -v update_build="$needs_build_update" '
   BEGIN {
     in_header=0; header_done=0;
-    hasProject=0; hasComponent=0; hasBuild=0; hasFirst=0; hasLast=0; hasSource=0; hasPurpose=0;
-  }
-  function emit_missing_before_purpose() {
-    if (!hasProject)   print " * Project: " project;
-    if (!hasComponent) print " * Component: " component;
-    if (!hasBuild)     print " * Build: " target_build;
-    if (!hasFirst)     print " * First Release: " default_first_release;
-    if (!hasLast)      print " * Last Change: -";
-    if (!hasSource)    print " * Source: New";
-    print " * ";
+    vProject=""; vComponent=""; vBuild=""; vFirst=""; vLast=""; vSource=""; vPurpose="";
+    foundProject=0; foundComponent=0; foundBuild=0; foundFirst=0; foundLast=0; foundSource=0; foundPurpose=0;
+    body_lines_count=0;
   }
   function trim(s) { sub(/^[[:space:]]+/, "", s); sub(/[[:space:]]+$/, "", s); return s; }
-
   {
     if (!header_done) {
       if (!in_header) {
-        if ($0 ~ /^[[:space:]]*\/\*/) { in_header=1; print $0; next; }
-        print $0; next;
+        if ($0 ~ /^[[:space:]]*\/*/) { in_header=1; next; }
+        body_lines[body_lines_count++] = $0; next;
       }
-
       # In headerblock
-      if ($0 ~ /\*\//) {
-        if (!hasPurpose) {
-          emit_missing_before_purpose();
-          print " * Purpose:";
-          print " * ";
-        }
-        print $0;
-        header_done=1;
-        next;
-      }
-
-      # Key normalisatie
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Project:[[:space:]]*/)   { print " * Project: " project; hasProject=1; next; }
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Component:[[:space:]]*/) { print " * Component: " component; hasComponent=1; next; }
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*/)     {
-        hasBuild=1;
-        if (update_build == 1) print " * Build: " target_build;
-        else print $0;
-        next;
-      }
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*First Release:[[:space:]]*/) { hasFirst=1; print $0; next; }
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Last Change:[[:space:]]*/)   { hasLast=1; print $0; next; }
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Source:[[:space:]]*/)        { hasSource=1; print $0; next; }
-
-      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Purpose:[[:space:]]*/) {
-        hasPurpose=1;
-        if (!hasProject || !hasComponent || !hasBuild || !hasFirst || !hasLast || !hasSource) {
-          emit_missing_before_purpose();
-          hasProject=hasComponent=hasBuild=hasFirst=hasLast=hasSource=1;
-        }
-        # Preserve any text after Purpose:
-        purpose = $0;
-        sub(/^[[:space:]]*\*[[:space:]]*Purpose:[[:space:]]*/, "", purpose);
-        purpose = trim(purpose);
-        if (purpose != "") print " * Purpose: " purpose;
-        else print " * Purpose:";
-        next;
-      }
-
-      # Default: keep header line
-      print $0;
+      if ($0 ~ /\*\//) { header_done=1; next; }
+      # Verzamel waarden
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Project:[[:space:]]*/)   { vProject=$0; foundProject=1; next; }
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Component:[[:space:]]*/) { vComponent=$0; foundComponent=1; next; }
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*/)     { vBuild=$0; foundBuild=1; next; }
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*First Release:[[:space:]]*/) { vFirst=$0; foundFirst=1; next; }
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Last Change:[[:space:]]*/)   { vLast=$0; foundLast=1; next; }
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Source:[[:space:]]*/)        { vSource=$0; foundSource=1; next; }
+      if ($0 ~ /^[[:space:]]*\*[[:space:]]*Purpose:[[:space:]]*/)       { vPurpose=$0; foundPurpose=1; next; }
       next;
     }
-
-    # After first headerblock: print rest unchanged
-    print $0;
-  }' "$file" > "$tmp"
+    # Na headerblock: verzamel body
+    body_lines[body_lines_count++] = $0;
+  }
+  END {
+    # Schrijf header in vaste volgorde
+    print "/*";
+    if (foundProject)   print vProject;   else print " * Project: " project;
+    if (foundComponent) print vComponent; else print " * Component: " component;
+    if (foundBuild) {
+      if (update_build == 1) print " * Build: " target_build;
+      else print vBuild;
+    } else print " * Build: " target_build;
+    if (foundFirst)     print vFirst;     else print " * First Release: Not Released";
+    if (foundLast)      print vLast;      else print " * Last Change: -";
+    if (foundSource)    print vSource;    else print " * Source: New";
+    print " * ";
+    if (foundPurpose)   print vPurpose;   else print " * Purpose:";
+    print " * ";
+    print "*/";
+    # Print body direct na header
+    for (i=0; i<body_lines_count; i++) print body_lines[i];
+  }
+  ' "$file" > "$tmp"
 
   mv "$tmp" "$file"
 }
