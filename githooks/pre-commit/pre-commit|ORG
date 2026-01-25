@@ -1,0 +1,33 @@
+#!/bin/bash
+# pre-commit hook: Controleert of buildnummer in feature/dev branch up-to-date is
+# Werkt alleen op feature/* of dev branch
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$BRANCH" =~ ^feature/ || "$BRANCH" == "dev" ]]; then
+  echo "[LMB pre-commit] Controleer buildnummers in JS componenten..."
+  FILES=(
+    "assets/js/global.js"
+    "assets/js/tools/logger/logger.js"
+    "assets/js/components/Wishlist.js"
+  )
+  TODAY=$(date +%Y%m%d)
+  for FILE in "${FILES[@]}"; do
+    if [[ -f "$FILE" ]]; then
+      BUILD_LINE=$(grep -m1 'Build: dev-' "$FILE")
+      if [[ $BUILD_LINE =~ dev-([0-9]{8})\.([0-9]{3}) ]]; then
+        BUILD_DATE=${BASH_REMATCH[1]}
+        BUILD_NUM=${BASH_REMATCH[2]}
+        if [[ "$BUILD_DATE" != "$TODAY" ]]; then
+          echo "[LMB pre-commit] FOUT: Buildnummer in $FILE is niet van vandaag ($BUILD_DATE). Update vereist!"
+          exit 1
+        fi
+      else
+        echo "[LMB pre-commit] FOUT: Geen geldig buildnummer gevonden in $FILE. Update vereist!"
+        exit 1
+      fi
+    fi
+  done
+  echo "[LMB pre-commit] Buildnummers OK."
+fi
+echo "[LMB pre-commit] Let op: verwijder na commit de overrides/ map als deze niet meer nodig is voor testen!"
+exit 0
