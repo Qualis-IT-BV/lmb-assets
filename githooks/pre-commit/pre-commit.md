@@ -11,10 +11,12 @@ Component:
 Build:  
     - Is de build volgens de standaarden.
     - Er wordt ook gecontroleerd of de dag nog klopt.
-    - Indien de dag niet juist is, wordt deze ook aangepast en wordt de teller weer op  0 gezet.
+    - Indien de dag niet juist is, wordt deze ook aangepast en wordt de teller weer op  1 gezet.
 
 First Release:
     - De versie van de eerste release dat het component is verschenen.
+    - Deze blijft zoals het is indien aanwezig.
+    - Indien deze niet aanwezig is wordt het: First Release: <projectnaam> unreleased
 
 Last Change:
     - De release dat deze voor het laatst is aangepast en datum Release.
@@ -32,7 +34,7 @@ Purpose:
 
 Header Voorbeeld:
 /* Project: Qualis IT Logger Utility
- * Component: Logger Utility
+ * Component: logger.js
  * Build: dev-20260120.003
  * First Release: lmb-assets unreleased
  * Last Change: -

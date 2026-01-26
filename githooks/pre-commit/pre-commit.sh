@@ -1,8 +1,13 @@
-#!/usr/bin/env bash
-# Q-GitHooks:  pre-commit hook
-# Build: hooks-20260125.002
-# Doel: Header afdwingen/normaliseren + Build-datum check (alleen feature/* en hotfix/*)
-
+# Project: q-githooks
+# Component: pre-commit.sh
+# Build: dev-20260126.001
+# First Release: q-githooks unreleased
+# Last Change: -
+# Source: New
+# 
+# Purpose:
+# 
+#
 
 set -euo pipefail
 
@@ -24,14 +29,97 @@ PROJECT_NAME="${THIS_PROJECT_NAME:-$REPO_NAME}"
 BUILD_PREFIX="${THIS_BUILD_PREFIX:-dev}"
 
 TODAY="$(date +%Y%m%d)"
-DEFAULT_FIRST_RELEASE="${THIS_FIRST_RELEASE:-$(date +%Y-%m-%d)}"
 
-# Welke bestanden wil je afdwingen?
-# (pas aan naar jouw repo; hieronder behoud ik je eerdere lijst)
-FILES=(
-  "assets/js/global.js"
-  "assets/js/components/Wishlist.js"
-)
+
+CONFIG_FILE="githooks/pre-commit/pre-commit-header.config"
+
+SEARCH_FOLDERS=()
+INCLUDE_PATTERNS=()
+EXCLUDE_PATTERNS=()
+section=""
+
+trim() {
+  local s="$1"
+  s="${s#"${s%%[![:space:]]*}"}"
+  s="${s%"${s##*[![:space:]]}"}"
+  printf '%s' "$s"
+}
+
+if [[ -f "$CONFIG_FILE" ]]; then
+  while IFS= read -r raw || [[ -n "$raw" ]]; do
+    raw="${raw%$'\r'}"
+    local_line="$(trim "$raw")"
+    [[ -z "$local_line" ]] && continue
+
+    # Section headers live in comment lines -> detect them BEFORE stripping comments
+    if [[ "$local_line" =~ ^#[[:space:]]*Searchfolders:?[[:space:]]*$ ]]; then
+      section="folders"; continue
+    elif [[ "$local_line" =~ ^#[[:space:]]*Include:?[[:space:]]*$ ]]; then
+      section="include"; continue
+    elif [[ "$local_line" =~ ^#[[:space:]]*File[[:space:]]+Exclusions:?[[:space:]]*$ ]]; then
+      section="exclude"; continue
+    fi
+
+    # Remove inline comments only for non-header lines
+    local_line="${local_line%%#*}"
+    local_line="$(trim "$local_line")"
+    [[ -z "$local_line" ]] && continue
+
+    case "$section" in
+      folders) SEARCH_FOLDERS+=("$local_line") ;;
+      include) INCLUDE_PATTERNS+=("$local_line") ;;
+      exclude) EXCLUDE_PATTERNS+=("$local_line") ;;
+      *) : ;;
+    esac
+  done < "$CONFIG_FILE"
+else
+  echo "[Q-GitHooks pre-commit] Geen pre-commit-header.config gevonden, geen bestanden geselecteerd."
+  exit 0
+fi
+
+
+# Vind alle bestanden volgens de config met één find-commando
+FILES=()
+if [[ ${#SEARCH_FOLDERS[@]} -gt 0 && ${#INCLUDE_PATTERNS[@]} -gt 0 ]]; then
+  # Bouw het find-commando als string (met quotes en escaped haakjes)
+  find_cmd="find"
+  for folder in "${SEARCH_FOLDERS[@]}"; do
+    find_cmd+=" $folder"
+  done
+  find_cmd+=" -type f"
+  # Include patterns
+  if [[ ${#INCLUDE_PATTERNS[@]} -gt 0 ]]; then
+    find_cmd+=" \("
+    for i in "${!INCLUDE_PATTERNS[@]}"; do
+      pat="${INCLUDE_PATTERNS[$i]}"
+      find_cmd+=" -name '$pat'"
+      if [[ $i -lt $(( ${#INCLUDE_PATTERNS[@]} - 1 )) ]]; then
+        find_cmd+=" -o"
+      fi
+    done
+    find_cmd+=" \)"
+  fi
+  # Exclude patterns
+  if [[ ${#EXCLUDE_PATTERNS[@]} -gt 0 ]]; then
+    find_cmd+=" ! \("
+    for i in "${!EXCLUDE_PATTERNS[@]}"; do
+      pat="${EXCLUDE_PATTERNS[$i]}"
+      find_cmd+=" -name '$pat'"
+      if [[ $i -lt $(( ${#EXCLUDE_PATTERNS[@]} - 1 )) ]]; then
+        find_cmd+=" -o"
+      fi
+    done
+    find_cmd+=" \)"
+  fi
+ while IFS= read -r file; do
+    FILES+=("$file")
+  done < <(eval $find_cmd 2>/dev/null)
+fi
+
+if [[ ${#FILES[@]} -eq 0 ]]; then
+  echo "[Q-GitHooks pre-commit] Geen bestanden gevonden volgens pre-commit-header.config."
+  exit 0
+fi
 
 changed_any=0
 changed_files=()
@@ -39,10 +127,7 @@ changed_files=()
 ensure_header_and_build() {
   local file="$1"
   local component="$2"
-  local default_first_release="$3"
-
-
-
+  
   # 1) Bepaal huidige Build uit header (alleen in de eerste ~80 regels zoeken)
   local build_line=""
   build_line="$(head -n 80 "$file" | grep -m1 -E '^[[:space:]]*\*[[:space:]]*Build:[[:space:]]*' || true)"
@@ -131,7 +216,7 @@ ensure_header_and_build() {
 /* Project: $PROJECT_NAME
  * Component: $component
  * Build: $target_build
- * First Release: $default_first_release
+ * First Release: $PROJECT_NAME unreleased
  * Last Change: -
  * Source: New
  * 
@@ -158,7 +243,7 @@ EOF
 /* Project: $PROJECT_NAME
  * Component: $component
  * Build: $target_build
- * First Release: $default_first_release
+ * First Release: $PROJECT_NAME unreleased
  * Last Change: -
  * Source: New
  * 
@@ -172,11 +257,10 @@ EOF
   fi
 
   # 4) Bestaand headerblock: herschrijf altijd in vaste volgorde en zet header altijd bovenaan
-    awk -v project="$PROJECT_NAME" \
-      -v component="$component" \
-      -v target_build="$target_build" \
-      -v default_first_release="$default_first_release" \
-      -v update_build="$needs_build_update" '
+      awk -v project="$PROJECT_NAME" \
+        -v component="$component" \
+        -v target_build="$target_build" \
+        -v update_build="$needs_build_update" '
   BEGIN {
     in_header=0; header_done=0;
     vProject=""; vComponent=""; vBuild=""; vFirst=""; vLast=""; vSource=""; vPurpose="";
@@ -214,7 +298,7 @@ EOF
       if (update_build == 1) print " * Build: " target_build;
       else print vBuild;
     } else print " * Build: " target_build;
-    if (foundFirst)     print vFirst;     else print " * First Release: Not Released";
+    if (foundFirst)     print vFirst;     else print " * First Release: " project " unreleased";
     if (foundLast)      print vLast;      else print " * Last Change: -";
     if (foundSource)    print vSource;    else print " * Source: New";
     print " * ";
@@ -243,7 +327,7 @@ for f in "${FILES[@]}"; do
   fi
 
   component="$(basename "$f")"
-  ensure_header_and_build "$f" "$component" "$DEFAULT_FIRST_RELEASE"
+  ensure_header_and_build "$f" "$component"
 
   # Als de hook iets aangepast heeft: opnieuw stagen
   if ! git diff --quiet -- "$f"; then

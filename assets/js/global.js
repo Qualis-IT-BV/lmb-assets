@@ -1,18 +1,14 @@
-/* Project: q-githooks
+/*
+ * Project: q-githooks
  * Component: global.js
- * Build: dev-20260125.005
- * First Release: 2026-01-19
+ * Build: dev-20260126.006
+ * First Release: 1.0.0
  * Last Change: -
  * Source: New
  * 
- * Project: q-githooks
+ * Purpose:
  * 
- * Purpose: testing
- * 
- */
-
-
-// Wishlist functionaliteit laden
+*/
 
 
 //Regel toegeovoegd om wijzigng te forceren.
@@ -32,4 +28,3 @@
 	script.async = false;
 	document.head.appendChild(script);
 })();
-
