@@ -1,12 +1,18 @@
 # Project: q-githooks
 # Component: pre-commit.sh
+# Component Version: v0.1.0
 # Build: dev-20260126.001
-# First Release: q-githooks unreleased
-# Last Change: -
+# First Release: q-githooks v0.0.1 (29-01-2026)
+# Last Change: 26-01-2026
 # Source: New
 # 
-# Purpose:
-# 
+# Purpose: This is meant to automatically add or update file headers and build numbers.
+#          It reads configuration from pre-commit-header.config to determine which files to process.
+#          It only runs on branches starting with feature/ or hotfix/.
+#          If a file is modified, it is automatically re-staged for commit.
+#  
+# Note: With this script is a config-file required -  pre-commit-header.config
+#
 #
 
 set -euo pipefail
