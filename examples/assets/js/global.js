@@ -1,9 +1,17 @@
-/* Project: La Maison Bossché
- * Version: 0.0.1
- * Build: dev-20260116.003
- */
+/*
+ * Project: q-githooks
+ * Component: global.js
+ * Build: dev-20260126.006
+ * First Release: 1.0.0
+ * Last Change: -
+ * Source: New
+ * 
+ * Purpose:
+ * 
+*/
 
-// Wishlist functionaliteit laden
+
+//Regel toegeovoegd om wijzigng te forceren.
 (function(){
 	var host = window.location.hostname;
 	var branch;
@@ -20,4 +28,3 @@
 	script.async = false;
 	document.head.appendChild(script);
 })();
-
