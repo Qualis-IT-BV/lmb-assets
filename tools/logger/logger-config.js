@@ -1,22 +1,18 @@
 
-// Logger Configuratie: Laadvolgorde scripts en styles
-// 1. logger.js (altijd eerst)
-// 2. blocksy-extra.css (voor wishlist styles)
-// 3. Wishlist.js (afhankelijk van logger)
+// LMB Debugger Config en asset-laadvolgorde
+window.LMB_TEST_CONFIG = {
+    logConfig: {
+        default: 'INFO',
+        Wishlist: 'DEBUG'
+    },
+    assetOrder: [
+        '/lmb-assets/tools/logger/logger.js',
+        '/lmb-assets/assets/css/blocksy-extra.css',
+        '/lmb-assets/assets/js/components/Wishlist.js'
+    ]
+};
 
-var LMB_ASSET_LOAD_ORDER = [
-    '/lmb-assets/tools/logger/logger.js',               //Altijd eerst laden
-
-//CSS Laden    
-    '/lmb-assets/assets/css/blocksy-extra.css',
-
-
-
-//JS Laden
-    '/lmb-assets/assets/js/components/Wishlist.js'
-];
-
-// Automatisch laden in de juiste volgorde
+// Automatisch laden in de juiste volgorde (optioneel)
 (function loadLMBAssetsSequentially(assets, cb) {
     if (!assets || !assets.length) return cb && cb();
     var asset = assets[0];
@@ -35,7 +31,7 @@ var LMB_ASSET_LOAD_ORDER = [
     } else {
         loadLMBAssetsSequentially(rest, cb);
     }
-})(LMB_ASSET_LOAD_ORDER);
+})(window.LMB_TEST_CONFIG.assetOrder);
     
 
 
