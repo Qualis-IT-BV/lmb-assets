@@ -17,36 +17,24 @@
 
 set -euo pipefail
 
+
+# Bepaal directory van het script zelf
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Ga naar scriptdirectory zodat git altijd vanaf juiste plek zoekt
+cd "$SCRIPT_DIR"
+
 # Controleer of we in een git-repo zitten
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "[Q-GitHooks pre-commit] ERROR: Dit script moet binnen een git-repository worden uitgevoerd." >&2
   exit 1
 fi
 
-# Altijd naar de git-root navigeren vóór git-commando's
+# Bepaal git-root vanaf scriptlocatie
 TOPLEVEL="$(git rev-parse --show-toplevel)"
-cd "$TOPLEVEL"
 
-BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-
-# Alleen afdwingen op feature/* en hotfix/*
-if ! [[ "$BRANCH" =~ ^feature/ || "$BRANCH" =~ ^hotfix/ ]]; then
-  exit 0
-fi
-
-echo "[Q-GitHooks pre-commit] Header + buildcontrole (branch: $BRANCH)"
-
-# Repo/projectnaam (kan je overriden met THIS_PROJECT_NAME)
-REPO_NAME="$(basename "$TOPLEVEL")"
-PROJECT_NAME="${THIS_PROJECT_NAME:-$REPO_NAME}"
-
-# Build-standaard (prefix) - default dev
-BUILD_PREFIX="${THIS_BUILD_PREFIX:-dev}"
-
-TODAY="$(date +%Y%m%d)"
-
-
-CONFIG_FILE="tools/githooks/pre-commit/pre-commit-header.config"
+# Gebruik config relatief aan scriptlocatie
+CONFIG_FILE="$SCRIPT_DIR/pre-commit-header.config"
 
 
 
