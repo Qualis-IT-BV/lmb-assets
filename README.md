@@ -1,101 +1,39 @@
-# La Maison Bossché -- Frontend Assets (lmb-assets)
+# Qualis Project Template
 
-Deze repository bevat alle **frontend assets (CSS & JS)** voor de
-website\
-**La Maison Bossché**, beheerd door **Qualis IT B.V.**
+Dit repository is de **standaard projecttemplate** voor Qualis IT projecten.  
+Het doel van deze template is het **uniformeren van werkwijze, documentatie, versioning en releases**, zodat projecten voorspelbaar, overdraagbaar en beheersbaar blijven.
 
-De assets worden centraal beheerd via **GitHub** en geladen in WordPress
-via **jsDelivr CDN**, per omgeving (dev / staging / live).
+Deze template is bedoeld om gebruikt te worden via **“Use this template”** in GitHub.
 
-Deze repo is opgezet voor **gestructureerd onderhoud**, versiebeheer en
-gefaseerde migratie van legacy styling (o.a. Blocksy Extra CSS).
+---
 
-------------------------------------------------------------------------
+## Wat standaardiseert deze template?
 
-## 🎯 Doel van deze repository
+Deze template definieert vaste afspraken voor:
 
--   Centrale plek voor **alle frontend assets**
--   Geen styling meer in:
-    -   Blocksy "Extra CSS"
-    -   inline `<style>` tags
--   Volledig beheer via:
-    -   GitHub
-    -   versie- en build-nummers
-    -   gecontroleerde releases
+- 📦 **Versioning**
+  - SemVer releases (`vX.Y.Z`)
+  - Environment build identifiers (`dev-`, `test-`, `staging-`, `main-`)
+- 🌿 **Branching**
+  - Feature branches
+  - Release branches
+  - Hotfix flow
+- 🚀 **Releases**
+  - Snapshot / Alpha releases
+  - Promotion releases (dev → test → staging → live)
+- 📚 **Documentatie**
+  - Duidelijke scheiding tussen standaarden en project-specifieke informatie
+- 🧾 **Samenwerking**
+  - Pull Request templates
+  - Issue templates
+  - Review-verplichtingen voor standaarden
 
-------------------------------------------------------------------------
+---
 
-## 📁 Structuur
+## Repository-structuur
 
-### Nieuwe standaard (actief)
-
-    assets/
-    ├─ css/
-    │  ├─ global.css
-    │  ├─ components/
-    │  └─ pages/
-    └─ js/
-       └─ global.js
-
-👉 **Alle nieuwe ontwikkeling gebeurt uitsluitend in `assets/`.**
-
-------------------------------------------------------------------------
-
-### Legacy structuur (uitfaseren)
-
-    css/
-    js/
-
--   Wordt nog ondersteund zolang WordPress hiernaar verwijst
--   Geen nieuwe features toevoegen
--   Alleen bugfixes indien strikt noodzakelijk
--   Wordt verwijderd zodra migratie is afgerond
-
-------------------------------------------------------------------------
-
-## 🌍 Omgevingen & branches
-
-### Branchstrategie
-
-  Type         Naam                           Doel
-  ------------ ------------------------------ --------------
-  Feature      feature/`<onderwerp>`{=html}   Gericht werk
-  Integratie   dev                            Samenbrengen
-  Acceptatie   staging                        Preproductie
-  Productie    main + tags                    Live
-
-------------------------------------------------------------------------
-
-## 🚀 Laden van assets in WordPress
-
-Voorbeeld CSS:
-
-    https://cdn.jsdelivr.net/gh/qualis-it-bv/lmb-assets@<branch>/assets/css/global.css
-
-Voor productie wordt gewerkt met **tags**.
-
-------------------------------------------------------------------------
-
-## 🧱 Versies & build-nummers
-
-Voorbeeld build-header:
-
-    /* Project: La Maison Bossché
-     * Version: 0.1.0
-     * Build: dev-20260115.001
-     */
-
-Zie `docs/versioning.md` voor details.
-
-------------------------------------------------------------------------
-
-## 🤖 Copilot
-
-Copilot-instructies staan in:
-
-    .github/copilot-instructions.md
-    .github/instructions/
-
-------------------------------------------------------------------------
-
-Beheer en onderhoud: **Qualis IT B.V.**
+```text
+docs/
+├─ 00-standards/   ← Geldt voor ALLE Qualis-projecten
+├─ 10-project/     ← Project-specifieke documentatie
+└─ 90-appendix/    ← Begrippen, beslissingen, achtergrond

@@ -1,0 +1,24 @@
+name: Bug report
+description: Meld een fout of onverwacht gedrag
+title: "[BUG] "
+labels: ["bug"]
+
+body:
+  - type: textarea
+    attributes:
+      label: Beschrijving
+      description: Wat gaat er mis?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Verwacht gedrag
+      description: Wat had je verwacht?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Context
+      description: Repo / branch / versie

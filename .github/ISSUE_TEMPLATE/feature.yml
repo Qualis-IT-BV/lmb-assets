@@ -1,0 +1,45 @@
+name: Feature request
+description: Voorstel voor een nieuwe feature of verbetering
+title: "[FEATURE] "
+labels: ["enhancement"]
+
+body:
+  - type: textarea
+    attributes:
+      label: AS A
+      description: Wie is de gebruiker of rol?
+      placeholder: "bijv. developer / beheerder / gebruiker"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: I WANT
+      description: Wat wil je kunnen doen?
+      placeholder: "bijv. automatisch build-nummers genereren"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: SO THAT
+      description: Wat is het doel of voordeel?
+      placeholder: "bijv. releases consistenter en traceerbaar zijn"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Acceptatiecriteria
+      description: Wanneer is dit feature “klaar”?
+      placeholder: |
+        - [ ] Werkt in dev
+        - [ ] Geen breaking changes
+        - [ ] Documentatie bijgewerkt
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Opmerkingen / context
+      description: Technische notities, ideeën of aandachtspunten
