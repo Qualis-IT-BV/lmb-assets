@@ -17,6 +17,16 @@
 
 set -euo pipefail
 
+# Controleer of we in een git-repo zitten
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "[Q-GitHooks pre-commit] ERROR: Dit script moet binnen een git-repository worden uitgevoerd." >&2
+  exit 1
+fi
+
+# Altijd naar de git-root navigeren vóór git-commando's
+TOPLEVEL="$(git rev-parse --show-toplevel)"
+cd "$TOPLEVEL"
+
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # Alleen afdwingen op feature/* en hotfix/*
@@ -27,7 +37,6 @@ fi
 echo "[Q-GitHooks pre-commit] Header + buildcontrole (branch: $BRANCH)"
 
 # Repo/projectnaam (kan je overriden met THIS_PROJECT_NAME)
-TOPLEVEL="$(git rev-parse --show-toplevel)"
 REPO_NAME="$(basename "$TOPLEVEL")"
 PROJECT_NAME="${THIS_PROJECT_NAME:-$REPO_NAME}"
 
@@ -37,7 +46,9 @@ BUILD_PREFIX="${THIS_BUILD_PREFIX:-dev}"
 TODAY="$(date +%Y%m%d)"
 
 
-CONFIG_FILE="githooks/pre-commit/pre-commit-header.config"
+CONFIG_FILE="tools/githooks/pre-commit/pre-commit-header.config"
+
+
 
 SEARCH_FOLDERS=()
 INCLUDE_PATTERNS=()
