@@ -31,7 +31,7 @@
     //"/assets/css/wishlist.css",      true, "INFO",
 
     // JS scripts to load
-    "/assets/js/components/Wishlist.js", true, "DEBUG"
+    "/assets/js/components/wishlist.js", true, "DEBUG"
     //"/assets/js/components/HEARTS.js",   true, "DEBUG"
   ];
 
